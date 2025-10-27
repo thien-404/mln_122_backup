@@ -15,12 +15,12 @@ import {
 } from "./lib/constants";
 import { useFitCellSize } from "./hooks/useFitCellSize";
 // Câu hỏi
-import { QUESTIONS } from "./data/QUESTION";
+import { DEFAULT_QUESTIONS, CASE_QUESTIONS } from "./data/QUESTION";
 
 const PRICE_BUMP_FACTOR = 1.2;
 
 // Câu hỏi demo
-
+const QUESTIONS=[...DEFAULT_QUESTIONS, ...CASE_QUESTIONS];
 const pickQuestion = () => QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 

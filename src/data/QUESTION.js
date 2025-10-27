@@ -3,7 +3,7 @@
 //  Chủ đề: Cạnh tranh ở cấp độ độc quyền
 // ==========================
 
-export const QUESTIONS = [
+export const DEFAULT_QUESTIONS = [
   // ==========================
   // 1️⃣ ĐỊNH NGHĨA / KHÁI NIỆM (10)
   // ==========================
@@ -273,3 +273,360 @@ export const QUESTIONS = [
   { id: 39, type: "text", q: "Độc quyền dẫn đến phân hóa ________ trong xã hội.", a: "giàu – nghèo" },
   { id: 40, type: "text", q: "Các tổ chức độc quyền liên kết với nhau tạo thành ________ để kiểm soát thị trường.", a: "liên minh" },
 ];
+
+export const CASE_QUESTIONS = [
+  // ==========================
+  // 🟩 TRẮC NGHIỆM (30)
+  // ==========================
+  {
+    id: 51,
+    type: "choice",
+    q: "Shopee bắt đầu hoạt động tại Việt Nam vào năm nào?",
+    options: ["A. 2012", "B. 2015", "C. 2018", "D. 2020"],
+    a: "B. 2015",
+  },
+  {
+    id: 52,
+    type: "choice",
+    q: "Đến Quý I/2025, Shopee chiếm khoảng bao nhiêu thị phần TMĐT Việt Nam?",
+    options: ["A. 45%", "B. 50%", "C. 60%", "D. 70%"],
+    a: "C. 60%",
+  },
+  {
+    id: 53,
+    type: "choice",
+    q: "Đặc trưng chính của cạnh tranh độc quyền nền tảng là:",
+    options: [
+      "A. Sản phẩm đồng nhất",
+      "B. Quyền lực dữ liệu và kiểm soát chuỗi cung ứng số",
+      "C. Không có đối thủ cạnh tranh",
+      "D. Không cần vốn đầu tư",
+    ],
+    a: "B. Quyền lực dữ liệu và kiểm soát chuỗi cung ứng số",
+  },
+  {
+    id: 54,
+    type: "choice",
+    q: "Chiến lược 'Freeship 0 đồng' của Shopee là ví dụ của:",
+    options: [
+      "A. Cạnh tranh phi giá",
+      "B. Trợ giá triệt tiêu (Predatory Subsidy)",
+      "C. Tăng giá bán",
+      "D. Giảm chi phí marketing",
+    ],
+    a: "B. Trợ giá triệt tiêu (Predatory Subsidy)",
+  },
+  {
+    id: 55,
+    type: "choice",
+    q: "Đơn vị vận chuyển riêng của Shopee là:",
+    options: ["A. SPX Express", "B. Giao Hàng Nhanh", "C. J&T Express", "D. Viettel Post"],
+    a: "A. SPX Express",
+  },
+  {
+    id: 56,
+    type: "choice",
+    q: "Tích hợp dọc (Vertical Integration) giúp Shopee đạt được điều gì?",
+    options: [
+      "A. Giảm kiểm soát chuỗi cung ứng",
+      "B. Tăng chi phí logistics",
+      "C. Kiểm soát toàn bộ chuỗi vận hành và giảm chi phí",
+      "D. Mất tính linh hoạt trong giao hàng",
+    ],
+    a: "C. Kiểm soát toàn bộ chuỗi vận hành và giảm chi phí",
+  },
+  {
+    id: 57,
+    type: "choice",
+    q: "Sau khi chiếm lĩnh thị trường, Shopee thực hiện hành vi nào?",
+    options: [
+      "A. Giảm phí sàn cho người bán",
+      "B. Tăng phí sàn và hoa hồng",
+      "C. Mở rộng thêm đối thủ",
+      "D. Cắt chương trình khuyến mãi",
+    ],
+    a: "B. Tăng phí sàn và hoa hồng",
+  },
+  {
+    id: 58,
+    type: "choice",
+    q: "Theo Mác – Lênin, cạnh tranh trong chủ nghĩa tư bản dẫn tới:",
+    options: [
+      "A. Phân tán tư bản",
+      "B. Tập trung tư bản và hình thành độc quyền",
+      "C. Giảm sản xuất",
+      "D. Mất động lực đổi mới",
+    ],
+    a: "B. Tập trung tư bản và hình thành độc quyền",
+  },
+  {
+    id: 59,
+    type: "choice",
+    q: "Trong kỷ nguyên số, tư liệu sản xuất mới là:",
+    options: ["A. Đất đai", "B. Máy móc", "C. Dữ liệu và người dùng", "D. Lao động thủ công"],
+    a: "C. Dữ liệu và người dùng",
+  },
+  {
+    id: 60,
+    type: "choice",
+    q: "Quyền lực của nền tảng Shopee chủ yếu đến từ:",
+    options: [
+      "A. Nguồn vốn nhà nước",
+      "B. Hiệu ứng mạng lưới và kiểm soát dữ liệu",
+      "C. Lao động giá rẻ",
+      "D. Xuất khẩu hàng hóa",
+    ],
+    a: "B. Hiệu ứng mạng lưới và kiểm soát dữ liệu",
+  },
+  {
+    id: 61,
+    type: "choice",
+    q: "Theo lý luận Mác – Lênin, mục tiêu cuối cùng của độc quyền là:",
+    options: [
+      "A. Giảm lợi nhuận",
+      "B. Tăng cạnh tranh",
+      "C. Tối đa hóa giá trị thặng dư",
+      "D. Mở rộng phúc lợi xã hội",
+    ],
+    a: "C. Tối đa hóa giá trị thặng dư",
+  },
+  {
+    id: 62,
+    type: "choice",
+    q: "Cạnh tranh trong nền kinh tế số chủ yếu diễn ra về:",
+    options: [
+      "A. Giá bán sản phẩm",
+      "B. Quyền kiểm soát dữ liệu và thuật toán",
+      "C. Chất lượng hàng hóa vật lý",
+      "D. Nhân công giá rẻ",
+    ],
+    a: "B. Quyền kiểm soát dữ liệu và thuật toán",
+  },
+  {
+    id: 63,
+    type: "choice",
+    q: "Hiện tượng gần 473.000 cửa hàng rút khỏi Shopee phản ánh:",
+    options: [
+      "A. Sự cạnh tranh công bằng",
+      "B. Bất bình đẳng cơ hội kinh doanh",
+      "C. Cải thiện năng suất SME",
+      "D. Tăng thu nhập cho người bán",
+    ],
+    a: "B. Bất bình đẳng cơ hội kinh doanh",
+  },
+  {
+    id: 64,
+    type: "choice",
+    q: "Lợi ích ngắn hạn của người tiêu dùng khi Shopee trợ giá là:",
+    options: [
+      "A. Giảm chi phí mua hàng",
+      "B. Tăng phí vận chuyển",
+      "C. Giảm lựa chọn sản phẩm",
+      "D. Mất khuyến mãi",
+    ],
+    a: "A. Giảm chi phí mua hàng",
+  },
+  {
+    id: 65,
+    type: "choice",
+    q: "Về dài hạn, người tiêu dùng chịu thiệt hại vì:",
+    options: [
+      "A. Shopee giảm khuyến mãi",
+      "B. Phí sàn tăng và giá hàng hóa cao hơn",
+      "C. Cạnh tranh tăng mạnh",
+      "D. Nhiều lựa chọn hơn",
+    ],
+    a: "B. Phí sàn tăng và giá hàng hóa cao hơn",
+  },
+  {
+    id: 66,
+    type: "choice",
+    q: "Rủi ro vận hành trong SPX Express được chuyển cho:",
+    options: ["A. Nhà đầu tư", "B. Người tiêu dùng", "C. Shipper", "D. Nhà nước"],
+    a: "C. Shipper",
+  },
+  {
+    id: 67,
+    type: "choice",
+    q: "Chính sách KPI và trừ tiền của SPX Express là biểu hiện của:",
+    options: [
+      "A. Cơ chế quản lý bằng hình phạt",
+      "B. Tăng thưởng cho shipper",
+      "C. Khuyến khích sáng tạo",
+      "D. Giảm rủi ro cho người bán",
+    ],
+    a: "A. Cơ chế quản lý bằng hình phạt",
+  },
+  {
+    id: 68,
+    type: "choice",
+    q: "Cạnh tranh độc quyền nền tảng của Shopee thể hiện rõ quy luật nào của Mác – Lênin?",
+    options: [
+      "A. Quy luật giá trị thặng dư",
+      "B. Quy luật tập trung và tích tụ tư bản",
+      "C. Quy luật giá trị lao động",
+      "D. Quy luật cung cầu",
+    ],
+    a: "B. Quy luật tập trung và tích tụ tư bản",
+  },
+  {
+    id: 69,
+    type: "choice",
+    q: "Đối tượng chịu thiệt thòi nhiều nhất trong độc quyền nền tảng là:",
+    options: ["A. SME và người lao động", "B. Nhà đầu tư", "C. Khách hàng lớn", "D. Chính phủ"],
+    a: "A. SME và người lao động",
+  },
+  {
+    id: 70,
+    type: "choice",
+    q: "Độc quyền nền tảng gây ra hệ quả nào cho sinh viên khởi nghiệp?",
+    options: [
+      "A. Tăng cơ hội sáng tạo",
+      "B. Mất khả năng cạnh tranh do thiếu vốn và dữ liệu",
+      "C. Giảm chi phí quảng cáo",
+      "D. Dễ tiếp cận khách hàng",
+    ],
+    a: "B. Mất khả năng cạnh tranh do thiếu vốn và dữ liệu",
+  },
+  {
+    id: 71,
+    type: "choice",
+    q: "Trong TMĐT, yếu tố nào trở thành rào cản mới?",
+    options: [
+      "A. Hạ tầng công nghệ và marketing vốn cao",
+      "B. Giấy phép đăng ký",
+      "C. Số lượng nhân viên",
+      "D. Thuế nhập khẩu",
+    ],
+    a: "A. Hạ tầng công nghệ và marketing vốn cao",
+  },
+  {
+    id: 72,
+    type: "choice",
+    q: "Tại sao gọi Shopee là 'độc quyền nền tảng' thay vì 'độc quyền thuần túy'?",
+    options: [
+      "A. Vì nó phụ thuộc vào mạng lưới người dùng và dữ liệu",
+      "B. Vì nó không có người dùng",
+      "C. Vì nó chỉ bán hàng hóa vật lý",
+      "D. Vì nó không có đối thủ cạnh tranh",
+    ],
+    a: "A. Vì nó phụ thuộc vào mạng lưới người dùng và dữ liệu",
+  },
+  {
+    id: 73,
+    type: "choice",
+    q: "Giải pháp nào giúp bảo vệ người bán nhỏ trên sàn TMĐT?",
+    options: [
+      "A. Minh bạch hóa cấu trúc phí và giới hạn tăng phí",
+      "B. Tăng phí dịch vụ",
+      "C. Giảm voucher khuyến mãi",
+      "D. Cấm shipper độc lập",
+    ],
+    a: "A. Minh bạch hóa cấu trúc phí và giới hạn tăng phí",
+  },
+  {
+    id: 74,
+    type: "choice",
+    q: "Khuyến nghị 'Mở dữ liệu' (Data Portability) có tác dụng:",
+    options: [
+      "A. Giúp SME chuyển dữ liệu sang sàn khác dễ dàng hơn",
+      "B. Giảm chi phí vận chuyển",
+      "C. Giảm lưu trữ dữ liệu khách hàng",
+      "D. Tăng quyền lực nền tảng",
+    ],
+    a: "A. Giúp SME chuyển dữ liệu sang sàn khác dễ dàng hơn",
+  },
+  {
+    id: 75,
+    type: "choice",
+    q: "Hành động nào phù hợp với sinh viên trong môi trường độc quyền số?",
+    options: [
+      "A. Tiêu dùng có chọn lọc và hỗ trợ thương hiệu Việt",
+      "B. Chạy quảng cáo cho nền tảng độc quyền",
+      "C. Tăng chi tiêu cá nhân trên sàn độc quyền",
+      "D. Tập trung vào thương mại truyền thống",
+    ],
+    a: "A. Tiêu dùng có chọn lọc và hỗ trợ thương hiệu Việt",
+  },
+  {
+    id: 76,
+    type: "choice",
+    q: "Theo Mác – Lênin, cạnh tranh tư bản chủ nghĩa cuối cùng dẫn đến:",
+    options: [
+      "A. Tự do tuyệt đối",
+      "B. Độc quyền hóa",
+      "C. Phân tán hóa",
+      "D. Bình đẳng kinh tế",
+    ],
+    a: "B. Độc quyền hóa",
+  },
+  {
+    id: 77,
+    type: "choice",
+    q: "Hành vi Shopee tăng phí sàn sau khi đạt thống trị gọi là:",
+    options: [
+      "A. Khai thác quyền lực thị trường",
+      "B. Tăng phúc lợi người bán",
+      "C. Giảm chi phí logistics",
+      "D. Cạnh tranh phi giá",
+    ],
+    a: "A. Khai thác quyền lực thị trường",
+  },
+  {
+    id: 78,
+    type: "choice",
+    q: "Shopee thể hiện bản chất của chủ nghĩa tư bản hiện đại thông qua:",
+    options: [
+      "A. Kiểm soát dữ liệu và dòng vốn khổng lồ",
+      "B. Giảm đầu tư R&D",
+      "C. Mở cửa hoàn toàn cho SME",
+      "D. Giảm hiệu ứng mạng lưới",
+    ],
+    a: "A. Kiểm soát dữ liệu và dòng vốn khổng lồ",
+  },
+  {
+    id: 79,
+    type: "choice",
+    q: "Theo lý thuyết Mác – Lênin, hình thức độc quyền hiện đại trong TMĐT là:",
+    options: [
+      "A. Độc quyền nền tảng số (Platform Monopoly)",
+      "B. Độc quyền tự nhiên",
+      "C. Độc quyền hành chính",
+      "D. Cạnh tranh hoàn hảo",
+    ],
+    a: "A. Độc quyền nền tảng số (Platform Monopoly)",
+  },
+  {
+    id: 80,
+    type: "choice",
+    q: "Một trong các hành động thiết thực của sinh viên trước độc quyền là:",
+    options: [
+      "A. Ủng hộ minh bạch dữ liệu và chính sách công bằng",
+      "B. Phụ thuộc hoàn toàn vào nền tảng độc quyền",
+      "C. Giảm tiêu dùng nội địa",
+      "D. Tránh tham gia khởi nghiệp",
+    ],
+    a: "A. Ủng hộ minh bạch dữ liệu và chính sách công bằng",
+  },
+
+  // ==========================
+  // 🟦 TỰ LUẬN (20)
+  // ==========================
+  { id: 81, type: "text", q: "Phân tích vì sao Shopee được xem là ví dụ điển hình của cạnh tranh độc quyền nền tảng.", a: "" },
+  { id: 82, type: "text", q: "Giải thích chiến lược 'Freeship 0 đồng' ảnh hưởng đến cấu trúc cạnh tranh như thế nào.", a: "" },
+  { id: 83, type: "text", q: "Theo lý luận Mác – Lênin, cạnh tranh dẫn đến độc quyền như thế nào?", a: "" },
+  { id: 84, type: "text", q: "Mô tả vai trò của dữ liệu và mạng lưới người dùng trong nền kinh tế số.", a: "" },
+  { id: 85, type: "text", q: "Nêu tác động của chính sách trợ giá đến các doanh nghiệp nhỏ (SME).", a: "" },
+  { id: 86, type: "text", q: "Phân tích lợi ích ngắn hạn và thiệt hại dài hạn của người tiêu dùng khi sử dụng Shopee.", a: "" },
+  { id: 87, type: "text", q: "Giải thích cơ chế 'ngoại hóa rủi ro' mà Shopee áp dụng đối với shipper và người bán.", a: "" },
+  { id: 88, type: "text", q: "Trình bày hậu quả xã hội của việc tập trung quyền lực thị trường trong TMĐT.", a: "" },
+  { id: 89, type: "text", q: "Theo bạn, Shopee đang thể hiện đặc điểm nào của chủ nghĩa tư bản hiện đại?", a: "" },
+  { id: 90, type: "text", q: "Phân tích vì sao sinh viên khởi nghiệp khó cạnh tranh trong môi trường độc quyền số.", a: "" },
+  { id: 91, type: "text", q: "Đề xuất giải pháp giúp SME tồn tại trong môi trường TMĐT chịu chi phối của Shopee.", a: "" },
+  { id: 92, type: "text", q: "Giải thích khái niệm 'khai thác lợi nhuận độc quyền' trong trường hợp Shopee.", a: "" },
+  { id: 93, type: "text", q: "Theo bạn, hiệu ứng mạng lưới ảnh hưởng thế nào đến quyền lực nền tảng?", a: "" },
+  { id: 94, type: "text", q: "Nêu nhận định: Shopee mang lại lợi ích hay rủi ro lớn hơn cho nền kinh tế Việt Nam?", a: "" },
+  { id: 95, type: "text", q: "Phân tích vai trò của nhà nước trong điều tiết thị trường TMĐT.", a: "" },
+  { id: 96, type: "text", q: "Đề xuất chính sách hỗ trợ người lao động nền tảng (shipper).", a: "" },
+  { id: 97, type: "text", q: "Tại sao cần minh bạch hóa cấu trúc phí và dữ liệu nền tảng?", a: "" },
+]
