@@ -405,7 +405,7 @@ export default function Game() {
       setPlayers((prev) =>
         prev.map((p, i) => (i === idx ? { ...p, money: p.money + 200 } : p))
       );
-      return `${player.name} nhận 200$.`;
+      return `${player.name} nhận 200 đồng.`;
     }
 
     if (card.effect === "MOVE_TO_NEXT_FREE_PROPERTY_HALF_PRICE") {
@@ -441,7 +441,7 @@ export default function Game() {
             : tile
         )
       );
-      return `${player.name} di chuyển đến ${target.name} và mua với giá ${halfPrice}$.`;
+      return `${player.name} di chuyển đến ${target.name} và mua với giá ${halfPrice} đồng.`;
     }
 
     if (card.effect === "LOSE_2_LIFE_OR_PAY_400") {
@@ -449,7 +449,7 @@ export default function Game() {
         setPlayers((prev) =>
           prev.map((p, i) => (i === idx ? { ...p, money: p.money - 400 } : p))
         );
-        return `${player.name} trả 400$ để vượt qua biến cố.`;
+        return `${player.name} trả 400 đồng để vượt qua biến cố.`;
       }
       const nextLives = Math.max(0, player.lives - 2);
       if (nextLives <= 0) {
@@ -843,7 +843,7 @@ export default function Game() {
                   <div>{currentTile.description || "Không có mô tả."}</div>
                   {currentTile.type === TILE_TYPES.PROPERTY && (
                     <div>
-                      Giá: <b>${currentTile.price}</b> • Phí ghé ô: <b>${currentTile.rent}</b>
+                      Giá: <b>{currentTile.price} đồng</b> • Phí ghé ô: <b>{currentTile.rent} đồng</b>
                       {currentTileOwner ? (
                         <> • Chủ: <b style={{ color: currentTileOwner.color }}>{currentTileOwner.name}</b></>
                       ) : (
@@ -868,14 +868,6 @@ export default function Game() {
               </div>
             </div>
 
-            {buyer && buyTile && buyTile.type === TILE_TYPES.PROPERTY && !buyTile.ownerId && !gameOver && (
-              <PurchaseCard
-                player={buyer}
-                tile={buyTile}
-                onBuy={() => handleBuyDecision(true)}
-                onSkip={() => handleBuyDecision(false)}
-              />
-            )}
           </div>
         </div>
       </div>
@@ -898,6 +890,18 @@ export default function Game() {
         onPickMoney={choosePayMoney}
         onPickLife={chooseLoseLife}
       />
+      {buyer && buyTile && buyTile.type === TILE_TYPES.PROPERTY && !buyTile.ownerId && !gameOver && (
+        <div className="fixed inset-0 z-40 flex items-end justify-center bg-black/30 p-4 md:items-center">
+          <div className="w-full max-w-md">
+            <PurchaseCard
+              player={buyer}
+              tile={buyTile}
+              onBuy={() => handleBuyDecision(true)}
+              onSkip={() => handleBuyDecision(false)}
+            />
+          </div>
+        </div>
+      )}
       <ModalChanceCard
         open={!gameOver && chanceOpen}
         card={chanceCard}
@@ -944,10 +948,10 @@ export default function Game() {
                     <div className="font-semibold" style={{ color: player.color }}>
                       {player.name}
                     </div>
-                    <div>${player.money}</div>
-                    <div>${player.propertyValue}</div>
+                    <div>{player.money} đồng</div>
+                    <div>{player.propertyValue} đồng</div>
                     <div>{player.lives}</div>
-                    <div className="font-semibold">${player.totalWorth}</div>
+                    <div className="font-semibold">{player.totalWorth} đồng</div>
                   </div>
                 ))}
               </div>

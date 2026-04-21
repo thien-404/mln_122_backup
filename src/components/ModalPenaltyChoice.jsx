@@ -18,11 +18,11 @@ export default function ModalPenaltyChoice({ open, tile, owner, rent, onPickMone
           Lựa chọn xử lý:
           {canAfford ? (
             <>
-              {" "}chọn <b>trả phí ${rent}</b> cho chủ hoặc <b>mất 1 mạng</b> (chủ sở hữu được <b>+1 mạng</b>).
+              {" "}chọn <b>trả phí {rent} đồng</b> cho chủ hoặc <b>mất 1 mạng</b> (chủ sở hữu được <b>+1 mạng</b>).
             </>
           ) : (
             <>
-              {" "}bạn không đủ tiền (${player.money} / ${rent}), nên bắt buộc <b>mất 1 mạng</b>. Chủ sở hữu được <b>+1 mạng</b>.
+              {" "}bạn không đủ tiền ({player.money} / {rent} đồng), nên bắt buộc <b>mất 1 mạng</b>. Chủ sở hữu được <b>+1 mạng</b>.
             </>
           )}
         </p>
@@ -34,7 +34,7 @@ export default function ModalPenaltyChoice({ open, tile, owner, rent, onPickMone
                 onClick={onPickMoney}
                 className="rounded-lg bg-amber-600 hover:bg-amber-700 text-white px-4 py-2"
               >
-                Trả ${rent}
+                Trả {rent} đồng
               </button>
               <button
                 onClick={onPickLife}

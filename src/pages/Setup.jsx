@@ -219,7 +219,7 @@ export default function Setup() {
                         {p.name}
                       </div>
                       <div className="text-xs text-slate-600 mt-1">
-                        Tiền: ${p.money} • Mạng: {p.lives}
+                        Tiền: {p.money} đồng • Mạng: {p.lives}
                       </div>
                     </div>
                   ))}

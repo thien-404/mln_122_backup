@@ -42,7 +42,7 @@ export default function Tile({ tile, owner, playersOnThisTile = [], size }) {
 
           {isProperty && (
             <div className="text-[12px] text-slate-500 mt-0.5">
-              ${tile.purchasePrice ?? tile.price}
+              {tile.purchasePrice ?? tile.price} đồng
             </div>
           )}
 

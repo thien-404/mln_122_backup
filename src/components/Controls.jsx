@@ -32,10 +32,10 @@ export default function Controls({
           marginBottom: 8,
         }}
       >
-        <h2 style={{ fontWeight: 700 }}>Lượt chơi</h2>
+        <h2 style={{ fontWeight: 700, fontSize: 16 }}>Lượt chơi</h2>
         <div
           style={{
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: 700,
             color: gameTimerEnabled ? "#991b1b" : "#475569",
             background: gameTimerEnabled ? "#fee2e2" : "#e2e8f0",
@@ -60,17 +60,17 @@ export default function Controls({
           {currentPlayer ? (
             <>
               <PlayerToken color={currentPlayer.color} label={currentPlayer.id} />
-              <div style={{ fontSize: 14, color: "#475569" }}>{currentPlayer.name}</div>
+              <div style={{ fontSize: 13, color: "#475569" }}>{currentPlayer.name}</div>
             </>
           ) : (
-            <div style={{ fontSize: 14, color: "#475569" }}>—</div>
+            <div style={{ fontSize: 13, color: "#475569" }}>—</div>
           )}
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <Dice value={diceValue} rolling={rolling} />
-          <div style={{ fontSize: 13, color: "#111827", fontWeight: 600 }}>
-            {currentPlayer ? <>${currentPlayer.money} • ❤️ {currentPlayer.lives}</> : "—"}
+          <div style={{ fontSize: 12, color: "#111827", fontWeight: 600 }}>
+            {currentPlayer ? <>{currentPlayer.money} đồng • ❤️ {currentPlayer.lives}</> : "—"}
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ export default function PlayerList({ players, currentPlayerId }) {
         boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
       }}
     >
-      <h2 style={{ fontWeight: 700, marginBottom: 8 }}>Danh sách người chơi</h2>
+      <h2 style={{ fontWeight: 700, marginBottom: 8, fontSize: 16 }}>Danh sách người chơi</h2>
       <ul style={{ display: "grid", gap: 8, padding: 0, margin: 0, listStyle: "none" }}>
         {players.map((p) => (
           <li
@@ -34,12 +34,12 @@ export default function PlayerList({ players, currentPlayerId }) {
                 }}
                 title={p.id}
               />
-              <span style={{ fontSize: 14, fontWeight: p.id === currentPlayerId ? 700 : 500 }}>
+              <span style={{ fontSize: 13, fontWeight: p.id === currentPlayerId ? 700 : 500 }}>
                 {p.name}
               </span>
             </div>
-            <div style={{ fontSize: 12, color: "#111827", fontWeight: 600 }}>
-              ${p.money} • ❤️ {p.lives} • Ô #{p.position + 1}
+            <div style={{ fontSize: 11, color: "#111827", fontWeight: 600 }}>
+              {p.money} đồng • ❤️ {p.lives} • Ô #{p.position + 1}
               {p.jailedTurns > 0 ? " • Đang bị giữ lượt" : ""}
             </div>
           </li>
