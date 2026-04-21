@@ -80,6 +80,8 @@ const tileTypeLabel = (type) => {
   return map[type] || type || "Không xác định";
 };
 
+const canAffordAmount = (money, amount) => (Number(money) || 0) >= (Number(amount) || 0);
+
 export default function Game() {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -148,10 +150,12 @@ export default function Game() {
   const [currQ, setCurrQ] = useState(null);
   const [pendingIdx, setPendingIdx] = useState(null);
   const [offerBuyForIdx, setOfferBuyForIdx] = useState(null);
+  const [offerBuyPriceOverride, setOfferBuyPriceOverride] = useState(null);
   const [penaltyForIdx, setPenaltyForIdx] = useState(null);
   const [chanceOpen, setChanceOpen] = useState(false);
   const [chanceCard, setChanceCard] = useState(null);
   const [chanceMessage, setChanceMessage] = useState("");
+  const chancePostResolveIdxRef = useRef(null);
   const [rolling, setRolling] = useState(false);
   const [diceValue, setDiceValue] = useState(1);
   const [isMoving, setIsMoving] = useState(false);
@@ -394,6 +398,12 @@ export default function Game() {
     setChanceOpen(false);
     setChanceCard(null);
     setChanceMessage("");
+    const followIdx = chancePostResolveIdxRef.current;
+    chancePostResolveIdxRef.current = null;
+    if (followIdx != null) {
+      resolveTileAfterQuestion(followIdx);
+      return;
+    }
     endTurn();
   }
 
@@ -411,37 +421,32 @@ export default function Game() {
     if (card.effect === "MOVE_TO_NEXT_FREE_PROPERTY_HALF_PRICE") {
       const currentPos = player.position;
       const tiles = tileListRef.current;
-      let target = null;
+      let targetIndex = null;
       for (let step = 1; step < tiles.length; step += 1) {
         const pos = (currentPos + step) % tiles.length;
         const tile = tiles[pos];
         if (tile?.type === TILE_TYPES.PROPERTY && !tile.ownerId) {
-          target = tile;
+          targetIndex = pos;
           break;
         }
       }
-      if (!target) return "Không còn ô trống để mua giá ưu đãi.";
+      if (targetIndex == null) return "Không còn ô trống để mua giá ưu đãi.";
 
+      const target = tiles[targetIndex];
       const halfPrice = Math.ceil((target.price || 0) * 0.5);
+      const passedStart = targetIndex < currentPos || targetIndex === START_TILE_ID;
       setPlayers((prev) =>
-        prev.map((p, i) =>
-          i === idx
-            ? {
-                ...p,
-                position: target.id,
-                money: Math.max(0, p.money - halfPrice),
-              }
-            : p
-        )
+        prev.map((p, i) => {
+          if (i !== idx) return p;
+          const next = { ...p, position: targetIndex };
+          if (passedStart) grantStartBonus(next);
+          return next;
+        })
       );
-      setTileList((prev) =>
-        prev.map((tile) =>
-          tile.id === target.id
-            ? { ...tile, ownerId: player.id, purchasePrice: halfPrice }
-            : tile
-        )
-      );
-      return `${player.name} di chuyển đến ${target.name} và mua với giá ${halfPrice} đồng.`;
+      setOfferBuyForIdx(idx);
+      setOfferBuyPriceOverride(halfPrice);
+      chancePostResolveIdxRef.current = null;
+      return `${player.name} được đề nghị mua ${target.name} với giá ưu đãi ${halfPrice} đồng.`;
     }
 
     if (card.effect === "LOSE_2_LIFE_OR_PAY_400") {
@@ -463,9 +468,19 @@ export default function Game() {
     }
 
     if (card.effect === "MOVE_TO_TILE_17") {
+      const currentPos = player.position;
+      const targetIndex = 17;
+      const passedStart = targetIndex < currentPos || targetIndex === START_TILE_ID;
       setPlayers((prev) =>
-        prev.map((p, i) => (i === idx ? { ...p, position: 17 } : p))
+        prev.map((p, i) => {
+          if (i !== idx) return p;
+          const next = { ...p, position: targetIndex };
+          if (passedStart) grantStartBonus(next);
+          return next;
+        })
       );
+      // After closing chance modal, resolve the destination tile without asking a new question.
+      chancePostResolveIdxRef.current = idx;
       return `${player.name} bị điều động đến ô Hà Nội quyết tử.`;
     }
 
@@ -488,18 +503,25 @@ export default function Game() {
     }
 
     if (card.effect === "OTHERS_LOSE_1_LIFE") {
-      const victims = [];
+      const victimIds = [];
       playersRef.current.forEach((p, i) => {
         if (i === idx) return;
         const afterLives = Math.max(0, p.lives - 1);
-        if (afterLives <= 0) victims.push(i);
+        if (afterLives <= 0) victimIds.push(p.id);
       });
       setPlayers((prev) =>
         prev.map((p, i) => (i === idx ? p : { ...p, lives: Math.max(0, p.lives - 1) }))
       );
-      victims
-        .sort((a, b) => b - a)
-        .forEach((victimIdx) => eliminateIfDead(victimIdx, 0));
+      // Eliminate by id (avoid index shifting). Defer until state applies.
+      setTimeout(() => {
+        if (gameOverRef.current) return;
+        victimIds.forEach((victimId) => {
+          const foundIdx = playersRef.current.findIndex((p) => p.id === victimId);
+          if (foundIdx >= 0 && (playersRef.current[foundIdx]?.lives ?? 0) <= 0) {
+            eliminateIfDead(foundIdx, 0);
+          }
+        });
+      }, 0);
       return "Tất cả người chơi khác mất 1 mạng.";
     }
 
@@ -672,18 +694,25 @@ export default function Game() {
       if (buyer) {
         const buyerId = buyer.id;
         const tileId = buyer.position;
-        const price = tileListRef.current[tileId].price;
+        const basePrice = tileListRef.current[tileId]?.price ?? 0;
+        const price = offerBuyPriceOverride ?? basePrice;
+        if (!canAffordAmount(buyer.money, price)) {
+          setOfferBuyForIdx(null);
+          setOfferBuyPriceOverride(null);
+          endTurn();
+          return;
+        }
 
         setPlayers((prev) =>
           prev.map((player, i) =>
-            i === idx ? { ...player, money: Math.max(0, player.money - price) } : player
+            i === idx ? { ...player, money: player.money - price } : player
           )
         );
 
         setTileList((prev) =>
           prev.map((tile, i) =>
             i === tileId
-              ? { ...tile, ownerId: buyerId, purchasePrice: tile.purchasePrice ?? tile.price }
+              ? { ...tile, ownerId: buyerId, purchasePrice: price }
               : tile
           )
         );
@@ -691,6 +720,7 @@ export default function Game() {
     }
 
     setOfferBuyForIdx(null);
+    setOfferBuyPriceOverride(null);
     endTurn();
   }
 
@@ -788,6 +818,7 @@ export default function Game() {
   const currentPlayer = hasPlayers ? players[Math.min(turnIdx, players.length - 1)] : null;
   const buyer = offerBuyForIdx != null ? players[offerBuyForIdx] : null;
   const buyTile = buyer ? tileList[buyer.position] : null;
+  const buyPrice = offerBuyPriceOverride ?? buyTile?.price ?? 0;
   const winnerSummary = gameOver?.winners?.length
     ? gameOver.winners.map((player) => player.name).join(", ")
     : "Không có";
@@ -894,8 +925,8 @@ export default function Game() {
         <div className="fixed inset-0 z-40 flex items-end justify-center bg-black/30 p-4 md:items-center">
           <div className="w-full max-w-md">
             <PurchaseCard
-              player={buyer}
-              tile={buyTile}
+              player={{ ...buyer, money: buyer.money }}
+              tile={{ ...buyTile, price: buyPrice }}
               onBuy={() => handleBuyDecision(true)}
               onSkip={() => handleBuyDecision(false)}
             />

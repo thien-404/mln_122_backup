@@ -2,7 +2,7 @@ import React from "react";
 import Tile from "./Tile";
 
 export default function Board({ rows, cols, cells, tiles, players, cellSize }) {
-  const playersOnTile = (tileId) => players.filter((p) => p.position === tileId);
+  const playersOnTileIndex = (tileIndex) => players.filter((p) => p.position === tileIndex);
   const findOwner = (ownerId) => players.find((p) => p.id === ownerId) || null;
 
   return (
@@ -13,7 +13,8 @@ export default function Board({ rows, cols, cells, tiles, players, cellSize }) {
       {cells.map((row, r) => (
         <React.Fragment key={r}>
           {row.map((cell, c) => {
-            const tile = cell.tileId !== null ? tiles[cell.tileId] : null;
+            const tileIndex = cell.tileId;
+            const tile = tileIndex !== null ? tiles[tileIndex] : null;
             const isEdge = r === 0 || c === 0 || r === rows - 1 || c === cols - 1;
 
             if (!isEdge) {
@@ -32,7 +33,7 @@ export default function Board({ rows, cols, cells, tiles, players, cellSize }) {
                 key={`${r}-${c}`}
                 tile={tile}
                 owner={owner}
-                playersOnThisTile={tile ? playersOnTile(tile.id) : []}
+                playersOnThisTile={tile ? playersOnTileIndex(tileIndex) : []}
                 size={cellSize}
               />
             );

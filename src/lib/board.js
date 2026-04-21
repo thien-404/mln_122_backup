@@ -41,8 +41,10 @@ export function createBoardRect(rows = 7, cols = 7) {
       color: type === TILE_TYPES.PROPERTY ? pickColorGroup(i) : null,
     };
     tiles.push(tile);
-    cells[r][c].tileId = tile.id;
+    // IMPORTANT: cell.tileId is the index into `tiles` array (not tile.id).
+    // This avoids coupling board rendering/position to external ids.
+    cells[r][c].tileId = i;
   }
 
-  return { rows, cols, tiles, cells }; // tiles.length === 40
+  return { rows, cols, tiles, cells };
 }
