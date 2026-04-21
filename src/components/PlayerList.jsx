@@ -1,4 +1,4 @@
-export default function PlayerList({ players }) {
+export default function PlayerList({ players, currentPlayerId }) {
   return (
     <div
       style={{
@@ -8,12 +8,20 @@ export default function PlayerList({ players }) {
         boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
       }}
     >
-      <h2 style={{ fontWeight: 700, marginBottom: 8 }}>Người chơi</h2>
+      <h2 style={{ fontWeight: 700, marginBottom: 8 }}>Danh sách người chơi</h2>
       <ul style={{ display: "grid", gap: 8, padding: 0, margin: 0, listStyle: "none" }}>
         {players.map((p) => (
           <li
             key={p.id}
-            style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "6px 8px",
+              borderRadius: 10,
+              background: p.id === currentPlayerId ? "#eff6ff" : "transparent",
+              border: p.id === currentPlayerId ? "1px solid #bfdbfe" : "1px solid transparent",
+            }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span
@@ -26,10 +34,13 @@ export default function PlayerList({ players }) {
                 }}
                 title={p.id}
               />
-              <span style={{ fontSize: 14 }}>{p.name}</span>
+              <span style={{ fontSize: 14, fontWeight: p.id === currentPlayerId ? 700 : 500 }}>
+                {p.name}
+              </span>
             </div>
             <div style={{ fontSize: 12, color: "#111827", fontWeight: 600 }}>
-              ${p.money} • ❤️ {p.lives} • Tile #{p.position}
+              ${p.money} • ❤️ {p.lives} • Ô #{p.position + 1}
+              {p.jailedTurns > 0 ? " • Đang bị giữ lượt" : ""}
             </div>
           </li>
         ))}

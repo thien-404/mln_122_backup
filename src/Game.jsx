@@ -7,18 +7,23 @@ import PlayerList from "./components/PlayerList";
 import ModalQuestion from "./components/ModalQuestion";
 import PurchaseCard from "./components/PurchaseCard";
 import ModalPenaltyChoice from "./components/ModalPenaltyChoice";
+import ModalChanceCard from "./components/ModalChanceCard";
 import {
   START_TILE_ID,
+  JAIL_TILE_ID,
   PASS_START_BONUS_MONEY,
   PASS_START_BONUS_LIFE,
   MAX_LIVES,
+  TILE_TYPES,
 } from "./lib/constants";
 import { useFitCellSize } from "./hooks/useFitCellSize";
 import { DEFAULT_QUESTIONS } from "./data/QUESTION";
+import { CHANCE_CARDS } from "./data/BOARD_CONCEPT";
 
 const PRICE_BUMP_FACTOR = 1.2;
 const LIFE_SCORE_VALUE = 500;
 const QUESTIONS = [...DEFAULT_QUESTIONS];
+const CHANCE_DECK = [...CHANCE_CARDS];
 
 const buildQuestionPool = (questions) => {
   const pool = [...questions];
@@ -28,6 +33,27 @@ const buildQuestionPool = (questions) => {
   }
   return pool;
 };
+const buildChanceDeck = (cards) => {
+  const deck = [...cards];
+  for (let i = deck.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
+};
+const shufflePlayers = (list) => {
+  const next = [...list];
+  for (let i = next.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [next[i], next[j]] = [next[j], next[i]];
+  }
+  return next;
+};
+
+const withPlayerDefaults = (player) => ({
+  ...player,
+  jailedTurns: player.jailedTurns ?? 0,
+});
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const normalizeAnswer = (value) =>
@@ -40,6 +66,18 @@ const formatTime = (seconds) => {
   const mm = String(Math.floor(safe / 60)).padStart(2, "0");
   const ss = String(safe % 60).padStart(2, "0");
   return `${mm}:${ss}`;
+};
+const tileTypeLabel = (type) => {
+  const map = {
+    GO: "Khởi đầu",
+    PROPERTY: "Tài sản",
+    CHANCE: "Sự kiện",
+    TAX: "Nộp quỹ",
+    JAIL: "Nhà tù",
+    SAFE: "An toàn",
+    GO_TO_JAIL: "Đi tù",
+  };
+  return map[type] || type || "Không xác định";
 };
 
 export default function Game() {
@@ -61,16 +99,18 @@ export default function Game() {
     if (!runtime?.players?.length) navigate("/", { replace: true });
   }, []); // eslint-disable-line
 
-  const base = useMemo(() => createBoardRect(7, 10), []);
+  const base = useMemo(() => createBoardRect(7, 7), []);
   const { rows, cols, cells } = base;
 
   const [tileList, setTileList] = useState(base.tiles);
-  const [players, setPlayers] = useState(
-    runtime?.players ?? [
-      { id: "P1", name: "Player 1", color: "#0ea5e9", lives: 3, money: 300, position: 0 },
-      { id: "P2", name: "Player 2", color: "#ef4444", lives: 3, money: 300, position: 0 },
-      { id: "P3", name: "Player 3", color: "#10b981", lives: 3, money: 300, position: 0 },
-    ]
+  const [players, setPlayers] = useState(() =>
+    shufflePlayers(
+      (runtime?.players ?? [
+        { id: "P1", name: "Player 1", color: "#0ea5e9", lives: 3, money: 300, position: 0 },
+        { id: "P2", name: "Player 2", color: "#ef4444", lives: 3, money: 300, position: 0 },
+        { id: "P3", name: "Player 3", color: "#10b981", lives: 3, money: 300, position: 0 },
+      ]).map(withPlayerDefaults)
+    )
   );
   const [eliminatedPlayers, setEliminatedPlayers] = useState([]);
 
@@ -83,6 +123,7 @@ export default function Game() {
   const [turnIdx, setTurnIdx] = useState(0);
   const turnIdxRef = useRef(turnIdx);
   const questionPoolRef = useRef(buildQuestionPool(QUESTIONS));
+  const chanceDeckRef = useRef(buildChanceDeck(CHANCE_DECK));
   useEffect(() => {
     turnIdxRef.current = turnIdx;
   }, [turnIdx]);
@@ -108,6 +149,9 @@ export default function Game() {
   const [pendingIdx, setPendingIdx] = useState(null);
   const [offerBuyForIdx, setOfferBuyForIdx] = useState(null);
   const [penaltyForIdx, setPenaltyForIdx] = useState(null);
+  const [chanceOpen, setChanceOpen] = useState(false);
+  const [chanceCard, setChanceCard] = useState(null);
+  const [chanceMessage, setChanceMessage] = useState("");
   const [rolling, setRolling] = useState(false);
   const [diceValue, setDiceValue] = useState(1);
   const [isMoving, setIsMoving] = useState(false);
@@ -126,7 +170,13 @@ export default function Game() {
   }, [gameOver]);
 
   const isActionLocked =
-    !!gameOver || qOpen || penaltyForIdx != null || offerBuyForIdx != null || rolling || isMoving;
+    !!gameOver ||
+    qOpen ||
+    chanceOpen ||
+    penaltyForIdx != null ||
+    offerBuyForIdx != null ||
+    rolling ||
+    isMoving;
 
   function grantStartBonus(player) {
     player.money += PASS_START_BONUS_MONEY;
@@ -288,6 +338,14 @@ export default function Game() {
     return questionPoolRef.current.pop() ?? null;
   }
 
+  function takeChanceCard() {
+    if (CHANCE_DECK.length === 0) return null;
+    if (chanceDeckRef.current.length === 0) {
+      chanceDeckRef.current = buildChanceDeck(CHANCE_DECK);
+    }
+    return chanceDeckRef.current.pop() ?? null;
+  }
+
   function openQuestionForPlayer(idx) {
     const nextQuestion = takeNextQuestion();
     if (!nextQuestion) {
@@ -326,9 +384,143 @@ export default function Game() {
     return true;
   }
 
+  function openChanceResult(card, message) {
+    setChanceCard(card);
+    setChanceMessage(message);
+    setChanceOpen(true);
+  }
+
+  function closeChanceResult() {
+    setChanceOpen(false);
+    setChanceCard(null);
+    setChanceMessage("");
+    endTurn();
+  }
+
+  function executeChanceCard(idx, card) {
+    const player = playersRef.current[idx];
+    if (!player || !card) return "Không có hiệu ứng.";
+
+    if (card.effect === "RECEIVE_200") {
+      setPlayers((prev) =>
+        prev.map((p, i) => (i === idx ? { ...p, money: p.money + 200 } : p))
+      );
+      return `${player.name} nhận 200$.`;
+    }
+
+    if (card.effect === "MOVE_TO_NEXT_FREE_PROPERTY_HALF_PRICE") {
+      const currentPos = player.position;
+      const tiles = tileListRef.current;
+      let target = null;
+      for (let step = 1; step < tiles.length; step += 1) {
+        const pos = (currentPos + step) % tiles.length;
+        const tile = tiles[pos];
+        if (tile?.type === TILE_TYPES.PROPERTY && !tile.ownerId) {
+          target = tile;
+          break;
+        }
+      }
+      if (!target) return "Không còn ô trống để mua giá ưu đãi.";
+
+      const halfPrice = Math.ceil((target.price || 0) * 0.5);
+      setPlayers((prev) =>
+        prev.map((p, i) =>
+          i === idx
+            ? {
+                ...p,
+                position: target.id,
+                money: Math.max(0, p.money - halfPrice),
+              }
+            : p
+        )
+      );
+      setTileList((prev) =>
+        prev.map((tile) =>
+          tile.id === target.id
+            ? { ...tile, ownerId: player.id, purchasePrice: halfPrice }
+            : tile
+        )
+      );
+      return `${player.name} di chuyển đến ${target.name} và mua với giá ${halfPrice}$.`;
+    }
+
+    if (card.effect === "LOSE_2_LIFE_OR_PAY_400") {
+      if (player.money >= 400) {
+        setPlayers((prev) =>
+          prev.map((p, i) => (i === idx ? { ...p, money: p.money - 400 } : p))
+        );
+        return `${player.name} trả 400$ để vượt qua biến cố.`;
+      }
+      const nextLives = Math.max(0, player.lives - 2);
+      if (nextLives <= 0) {
+        eliminateIfDead(idx, nextLives);
+        return `${player.name} mất 2 mạng và bị loại.`;
+      }
+      setPlayers((prev) =>
+        prev.map((p, i) => (i === idx ? { ...p, lives: nextLives } : p))
+      );
+      return `${player.name} mất 2 mạng.`;
+    }
+
+    if (card.effect === "MOVE_TO_TILE_17") {
+      setPlayers((prev) =>
+        prev.map((p, i) => (i === idx ? { ...p, position: 17 } : p))
+      );
+      return `${player.name} bị điều động đến ô Hà Nội quyết tử.`;
+    }
+
+    if (card.effect === "COLLECT_50_FROM_EACH") {
+      setPlayers((prev) => {
+        const next = prev.map((p) => ({ ...p }));
+        const receiver = next[idx];
+        if (!receiver) return prev;
+        let collected = 0;
+        next.forEach((p, i) => {
+          if (i === idx) return;
+          const pay = Math.min(50, p.money);
+          p.money -= pay;
+          collected += pay;
+        });
+        receiver.money += collected;
+        return next;
+      });
+      return `${player.name} nhận tiền ủng hộ từ các người chơi còn lại.`;
+    }
+
+    if (card.effect === "OTHERS_LOSE_1_LIFE") {
+      const victims = [];
+      playersRef.current.forEach((p, i) => {
+        if (i === idx) return;
+        const afterLives = Math.max(0, p.lives - 1);
+        if (afterLives <= 0) victims.push(i);
+      });
+      setPlayers((prev) =>
+        prev.map((p, i) => (i === idx ? p : { ...p, lives: Math.max(0, p.lives - 1) }))
+      );
+      victims
+        .sort((a, b) => b - a)
+        .forEach((victimIdx) => eliminateIfDead(victimIdx, 0));
+      return "Tất cả người chơi khác mất 1 mạng.";
+    }
+
+    return "Thẻ không có hiệu ứng hợp lệ.";
+  }
+
   async function moveAndResolve() {
     if (isActionLocked || gameOverRef.current) return;
     if (playersRef.current.length === 0) return;
+    const current = playersRef.current[Math.min(turnIdxRef.current, playersRef.current.length - 1)];
+    if (current?.jailedTurns > 0) {
+      setPlayers((prev) =>
+        prev.map((player, idx) =>
+          idx === turnIdxRef.current
+            ? { ...player, jailedTurns: Math.max(0, (player.jailedTurns || 0) - 1) }
+            : player
+        )
+      );
+      endTurn();
+      return;
+    }
 
     setRolling(true);
     const finalD = 1 + Math.floor(Math.random() * 6);
@@ -390,12 +582,57 @@ export default function Game() {
       endTurn();
       return;
     }
-    if (tile.type === "PROPERTY" && !tile.ownerId) {
+    if (tile.type === TILE_TYPES.PROPERTY && !tile.ownerId) {
       setOfferBuyForIdx(safeIdx);
       return;
     }
-    if (tile.type === "PROPERTY" && tile.ownerId && tile.ownerId !== player.id) {
+    if (tile.type === TILE_TYPES.PROPERTY && tile.ownerId && tile.ownerId !== player.id) {
       setPenaltyForIdx(safeIdx);
+      return;
+    }
+    if (tile.type === TILE_TYPES.CHANCE) {
+      const card = takeChanceCard();
+      if (!card) {
+        endTurn();
+        return;
+      }
+      const message = executeChanceCard(safeIdx, card);
+      openChanceResult(card, message);
+      return;
+    }
+    if (tile.type === TILE_TYPES.TAX) {
+      const amount = Math.abs(tile.rent || 0);
+      setPlayers((prev) =>
+        prev.map((p, i) =>
+          i === safeIdx ? { ...p, money: tile.rent < 0 ? Math.max(0, p.money - amount) : p.money + amount } : p
+        )
+      );
+      endTurn();
+      return;
+    }
+    if (tile.type === TILE_TYPES.SAFE) {
+      setPlayers((prev) =>
+        prev.map((p, i) =>
+          i === safeIdx ? { ...p, lives: Math.min(MAX_LIVES_RUNTIME, p.lives + 1) } : p
+        )
+      );
+      endTurn();
+      return;
+    }
+    if (tile.type === TILE_TYPES.GO_TO_JAIL) {
+      setPlayers((prev) =>
+        prev.map((p, i) =>
+          i === safeIdx ? { ...p, position: JAIL_TILE_ID, jailedTurns: 1 } : p
+        )
+      );
+      endTurn();
+      return;
+    }
+    if (tile.type === TILE_TYPES.JAIL) {
+      setPlayers((prev) =>
+        prev.map((p, i) => (i === safeIdx ? { ...p, jailedTurns: 1 } : p))
+      );
+      endTurn();
       return;
     }
     endTurn();
@@ -463,7 +700,7 @@ export default function Game() {
     ? players.find((player) => player.id === penaltyTile.ownerId)
     : null;
   const rent = penaltyTile
-    ? Math.ceil(0.6 * (penaltyTile.purchasePrice ?? penaltyTile.price))
+    ? penaltyTile.rent ?? Math.ceil(0.6 * (penaltyTile.purchasePrice ?? penaltyTile.price))
     : 0;
 
   function choosePayMoney() {
@@ -554,26 +791,30 @@ export default function Game() {
   const winnerSummary = gameOver?.winners?.length
     ? gameOver.winners.map((player) => player.name).join(", ")
     : "Không có";
+  const currentTile = currentPlayer ? tileList[currentPlayer.position] : null;
+  const currentTileOwner = currentTile?.ownerId
+    ? players.find((player) => player.id === currentTile.ownerId)
+    : null;
 
   return (
     <div className="min-h-screen bg-slate-100 p-3 md:p-4">
       <div className="max-w-[1400px] mx-auto">
         <div className="flex items-center justify-between">
-          <h1 className="text-[22px] font-bold">MonopolyEdu – Game</h1>
+          <h1 className="text-[22px] font-bold">MonopolyEdu – Bản đồ lịch sử 1945-1946</h1>
           <button
             onClick={() => navigate("/", { replace: false })}
             className="text-sm rounded-lg border border-slate-300 px-3 py-1 hover:bg-slate-50"
-            title="Quay lại Setup"
+            title="Quay lại màn hình thiết lập"
           >
-            ← Setup
+            ← Thiết lập
           </button>
         </div>
 
         <p className="text-slate-600 mt-1">
-          Cấu hình: {players.length} người chơi • MAX_LIVES = {MAX_LIVES_RUNTIME}
+          Cấu hình: {players.length} người chơi • Tối đa {MAX_LIVES_RUNTIME} mạng
         </p>
         <p className="text-slate-500 text-sm mt-1">
-          Timer tổng: {gameTimerEnabled ? formatTime(remainingGameSeconds) : "Off"} • Timer câu hỏi: {questionTimerEnabled ? `${QUESTION_DURATION_SECONDS}s` : "Off"}
+          Thời gian trận: {gameTimerEnabled ? formatTime(remainingGameSeconds) : "Tắt"} • Thời gian câu hỏi: {questionTimerEnabled ? `${QUESTION_DURATION_SECONDS}s` : "Tắt"}
         </p>
 
         <div className="grid grid-cols-12 gap-3 mt-3">
@@ -591,9 +832,43 @@ export default function Game() {
               gameTimerEnabled={gameTimerEnabled}
               gameTimerLabel={formatTime(remainingGameSeconds)}
             />
-            <PlayerList players={players} />
+            <PlayerList players={players} currentPlayerId={currentPlayer?.id} />
+            <div className="rounded-2xl bg-white p-4 shadow-md border border-slate-200">
+              <div className="text-sm font-semibold text-slate-800">Thông tin ô hiện tại</div>
+              {currentTile ? (
+                <div className="mt-2 text-sm text-slate-600 space-y-1">
+                  <div>
+                    <b>{currentTile.name}</b> • {tileTypeLabel(currentTile.type)}
+                  </div>
+                  <div>{currentTile.description || "Không có mô tả."}</div>
+                  {currentTile.type === TILE_TYPES.PROPERTY && (
+                    <div>
+                      Giá: <b>${currentTile.price}</b> • Phí ghé ô: <b>${currentTile.rent}</b>
+                      {currentTileOwner ? (
+                        <> • Chủ: <b style={{ color: currentTileOwner.color }}>{currentTileOwner.name}</b></>
+                      ) : (
+                        <> • Chưa có chủ</>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="mt-2 text-sm text-slate-500">Chưa có người chơi ở lượt hiện tại.</div>
+              )}
+            </div>
+            <div className="rounded-2xl bg-white p-4 shadow-md border border-slate-200">
+              <div className="text-sm font-semibold text-slate-800">Chú thích loại ô</div>
+              <div className="mt-2 grid grid-cols-2 gap-1 text-xs text-slate-600">
+                <div>Khởi đầu</div>
+                <div>Sự kiện</div>
+                <div>Tài sản</div>
+                <div>Nộp quỹ</div>
+                <div>Nhà tù</div>
+                <div>An toàn</div>
+              </div>
+            </div>
 
-            {buyer && buyTile && buyTile.type === "PROPERTY" && !buyTile.ownerId && !gameOver && (
+            {buyer && buyTile && buyTile.type === TILE_TYPES.PROPERTY && !buyTile.ownerId && !gameOver && (
               <PurchaseCard
                 player={buyer}
                 tile={buyTile}
@@ -623,6 +898,12 @@ export default function Game() {
         onPickMoney={choosePayMoney}
         onPickLife={chooseLoseLife}
       />
+      <ModalChanceCard
+        open={!gameOver && chanceOpen}
+        card={chanceCard}
+        message={chanceMessage}
+        onClose={closeChanceResult}
+      />
 
       {gameOver && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -631,7 +912,11 @@ export default function Game() {
               <div>
                 <h2 className="text-2xl font-bold">Hết game</h2>
                 <p className="text-slate-600 mt-1">
-                  {gameOver.reason === "timeout" ? "Time is up." : gameOver.reason === "last-survivor" ? "Only one player survived." : "The match has ended."}
+                  {gameOver.reason === "timeout"
+                    ? "Đã hết thời gian trận đấu."
+                    : gameOver.reason === "last-survivor"
+                    ? "Chỉ còn một người sống sót."
+                    : "Trận đấu đã kết thúc."}
                 </p>
               </div>
               <div className="rounded-xl bg-emerald-50 px-4 py-2 text-right">
@@ -645,9 +930,9 @@ export default function Game() {
                 <div>Hạng</div>
                 <div>Người chơi</div>
                 <div>Tiền</div>
-                <div>Property</div>
+                <div>Tài sản</div>
                 <div>Mạng</div>
-                <div>Tổng TS</div>
+                <div>Tổng điểm</div>
               </div>
               <div className="divide-y divide-slate-200">
                 {gameOver.standings.map((player, index) => (
@@ -677,7 +962,7 @@ export default function Game() {
                 onClick={() => navigate("/", { replace: false })}
                 className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700 hover:bg-slate-50"
               >
-                Về Setup
+                Về thiết lập
               </button>
             </div>
           </div>

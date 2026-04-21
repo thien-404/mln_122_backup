@@ -1,9 +1,9 @@
 import { TILE_TYPES } from "./constants";
 import { pickColorGroup } from "./colors";
-import { VIETNAM_PROVINCES } from "../data/VIETNAM_PROVINCES";
+import { BOARD_TILES } from "../data/BOARD_CONCEPT";
 
-/** Board 10 hàng × 12 cột; chỉ dùng ô VIỀN; ô giữa để trống */
-export function createBoardRect(rows = 10, cols = 12) {
+/** Board 7x7, vien 24 o theo concept moi */
+export function createBoardRect(rows = 7, cols = 7) {
   if (rows < 3 || cols < 3) throw new Error("rows & cols must be >= 3");
 
   const tiles = [];
@@ -18,29 +18,26 @@ export function createBoardRect(rows = 10, cols = 12) {
   for (let c = cols - 2; c >= 0; c--) loop.push({ r: 0, c });             // hàng trên
   for (let r = 1; r < rows - 1; r++) loop.push({ r, c: 0 });              // cột trái
 
-  const perimeter = 2 * (rows + cols) - 4; // = 40
-
-  // START ở góc trái-dưới (index 0); FREE ở đối diện
-  const special = {
-    0: TILE_TYPES.START,
-    [Math.floor(perimeter / 2)]: TILE_TYPES.FREE_PARKING,
-  };
+  const perimeter = 2 * (rows + cols) - 4;
+  if (perimeter !== BOARD_TILES.length) {
+    throw new Error(`Board perimeter ${perimeter} must equal tiles ${BOARD_TILES.length}`);
+  }
 
   for (let i = 0; i < loop.length; i++) {
     const { r, c } = loop[i];
-    const type = special[i] || TILE_TYPES.PROPERTY;
+    const source = BOARD_TILES[i];
+    const type = source.type;
     const tile = {
-      id: i,
-      name: type === TILE_TYPES.START
-        ? "START"
-        : type === TILE_TYPES.FREE_PARKING
-          ? "FREE"
-          : VIETNAM_PROVINCES[i % VIETNAM_PROVINCES.length],
+      id: source.id,
+      name: source.name,
       type,
       row: r,
       col: c,
+      group: source.group,
+      rent: source.rent ?? 0,
+      description: source.description ?? "",
       ownerId: null,
-      price: type === TILE_TYPES.PROPERTY ? 100 + (i % 5) * 20 : 0,
+      price: type === TILE_TYPES.PROPERTY ? source.price : 0,
       color: type === TILE_TYPES.PROPERTY ? pickColorGroup(i) : null,
     };
     tiles.push(tile);

@@ -1,10 +1,15 @@
 export const TILE_TYPES = {
-  START: "START",
+  GO: "GO",
   PROPERTY: "PROPERTY",
-  FREE_PARKING: "FREE_PARKING",
+  CHANCE: "CHANCE",
+  TAX: "TAX",
+  JAIL: "JAIL",
+  SAFE: "SAFE",
+  GO_TO_JAIL: "GO_TO_JAIL",
 };
 
 export const START_TILE_ID = 0;
+export const JAIL_TILE_ID = 6;
 
 // Ô VUÔNG
 export const CELL_SIZE = 84; // px (đổi tùy ý)

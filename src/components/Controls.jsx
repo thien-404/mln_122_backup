@@ -43,7 +43,7 @@ export default function Controls({
             padding: "4px 10px",
           }}
         >
-          {gameTimerEnabled ? `Timer: ${gameTimerLabel}` : "Timer: Off"}
+          {gameTimerEnabled ? `Thời gian trận: ${gameTimerLabel}` : "Thời gian trận: Tắt"}
         </div>
       </div>
 
@@ -88,7 +88,7 @@ export default function Controls({
           cursor: locked ? "not-allowed" : "pointer",
         }}
       >
-        {rolling ? "Đang quay..." : "Roll Dice & Move"}
+        {rolling ? "Đang quay..." : "Đổ xúc xắc và di chuyển"}
       </button>
     </div>
   );

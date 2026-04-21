@@ -8,21 +8,21 @@ export default function ModalPenaltyChoice({ open, tile, owner, rent, onPickMone
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl">
-        <h3 className="text-lg font-semibold">Bạn đã vào tài sản của người khác</h3>
+        <h3 className="text-lg font-semibold">Bạn đã vào ô tài sản có chủ</h3>
         <p className="mt-2 text-slate-600">
-          Ô: <b>{tile.name}</b> • Chủ sở hữu:{" "}
+          Ô hiện tại: <b>{tile.name}</b> • Chủ sở hữu:{" "}
           <b style={{ color: owner.color }}>{owner.name}</b>
         </p>
 
-        <p className="mt-1 text-slate-600">
-          Hình phạt: 
+        <p className="mt-2 text-slate-600">
+          Lựa chọn xử lý:
           {canAfford ? (
             <>
-              {" "}chọn <b>trả tiền thuê</b> (chuyển cho chủ) hoặc <b>mất 1 máu</b> (chủ sở hữu được <b>+1 máu</b>).
+              {" "}chọn <b>trả phí ${rent}</b> cho chủ hoặc <b>mất 1 mạng</b> (chủ sở hữu được <b>+1 mạng</b>).
             </>
           ) : (
             <>
-              {" "}bạn không đủ tiền (${player.money} / ${rent}) nên phải <b>mất 1 máu</b>. Chủ sở hữu được <b>+1 máu</b>.
+              {" "}bạn không đủ tiền (${player.money} / ${rent}), nên bắt buộc <b>mất 1 mạng</b>. Chủ sở hữu được <b>+1 mạng</b>.
             </>
           )}
         </p>
@@ -40,7 +40,7 @@ export default function ModalPenaltyChoice({ open, tile, owner, rent, onPickMone
                 onClick={onPickLife}
                 className="rounded-lg border border-slate-300 hover:bg-slate-50 px-4 py-2"
               >
-                Mất 1 máu
+                Mất 1 mạng
               </button>
             </>
           ) : (
@@ -48,7 +48,7 @@ export default function ModalPenaltyChoice({ open, tile, owner, rent, onPickMone
               onClick={onPickLife}
               className="rounded-lg bg-red-600 hover:bg-red-700 text-white px-4 py-2"
             >
-              Mất 1 máu
+              Mất 1 mạng
             </button>
           )}
         </div>
