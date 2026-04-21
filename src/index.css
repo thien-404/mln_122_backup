@@ -1,3 +1,20 @@
 @import "tailwindcss";
 
-html, body, #root { height: 100%; margin: 0; font-family: system-ui, Arial, sans-serif; }
+html {
+  font-size: 18px;
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 20px;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  line-height: 1.4;
+}

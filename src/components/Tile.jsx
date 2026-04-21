@@ -29,7 +29,7 @@ export default function Tile({ tile, owner, playersOnThisTile = [], size }) {
       {tile ? (
         <div className="text-center w-full px-1">
           <div
-            className="text-[10px] font-semibold leading-tight break-words"
+            className="text-[13px] font-semibold leading-tight break-words"
             style={{ color: owner?.color || "#0f172a" }}
             title={tile.description || (owner ? `Chủ: ${owner.name}` : undefined)}
           >
@@ -37,11 +37,11 @@ export default function Tile({ tile, owner, playersOnThisTile = [], size }) {
           </div>
 
           {!isProperty && (
-            <div className="text-[9px] text-slate-500 uppercase mt-0.5">{typeLabel}</div>
+            <div className="text-[11px] text-slate-500 uppercase mt-0.5">{typeLabel}</div>
           )}
 
           {isProperty && (
-            <div className="text-[10px] text-slate-500 mt-0.5">
+            <div className="text-[12px] text-slate-500 mt-0.5">
               ${tile.purchasePrice ?? tile.price}
             </div>
           )}
