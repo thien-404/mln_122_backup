@@ -3,11 +3,13 @@ import PlayerToken from "./PlayerToken";
 import Dice from "./Dice";
 
 export default function Controls({
-  currentPlayer,   // có thể null
+  currentPlayer,
   onRoll,
   disabled = false,
   rolling = false,
   diceValue = 1,
+  gameTimerEnabled = false,
+  gameTimerLabel = "00:00",
 }) {
   const noPlayer = !currentPlayer;
   const locked = disabled || rolling || noPlayer;
@@ -21,7 +23,29 @@ export default function Controls({
         boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
       }}
     >
-      <h2 style={{ fontWeight: 700, marginBottom: 8 }}>Lượt chơi</h2>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+          marginBottom: 8,
+        }}
+      >
+        <h2 style={{ fontWeight: 700 }}>Lượt chơi</h2>
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            color: gameTimerEnabled ? "#991b1b" : "#475569",
+            background: gameTimerEnabled ? "#fee2e2" : "#e2e8f0",
+            borderRadius: 999,
+            padding: "4px 10px",
+          }}
+        >
+          {gameTimerEnabled ? `Timer: ${gameTimerLabel}` : "Timer: Off"}
+        </div>
+      </div>
 
       <div
         style={{

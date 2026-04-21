@@ -7,6 +7,7 @@ const defaultPalette = [
 ];
 
 const defaultName = (i) => `Player ${i + 1}`;
+const normalizeNonNegative = (value) => Math.max(0, Number(value) || 0);
 
 export default function Setup() {
   const navigate = useNavigate();
@@ -20,8 +21,9 @@ export default function Setup() {
   const [startMoney, setStartMoney] = useState(500);
   const [startLives, setStartLives] = useState(3);
   const [maxLives, setMaxLives] = useState(5);
+  const [gameDurationMinutes, setGameDurationMinutes] = useState(0);
+  const [questionDurationSeconds, setQuestionDurationSeconds] = useState(0);
 
-  // Đồng bộ mảng màu khi thay đổi số người
   useEffect(() => {
     setColors((prev) => {
       const next = [...prev];
@@ -34,12 +36,11 @@ export default function Setup() {
     });
   }, [playerCount]);
 
-  // Đồng bộ mảng tên khi thay đổi số người
   useEffect(() => {
     setNames((prev) => {
       const next = [...prev];
       if (playerCount > next.length) {
-        for (let i = next.length; i < playerCount; i++) {
+        for (let i = next.length; i < playerCount; i += 1) {
           next.push(defaultName(i));
         }
       } else {
@@ -65,13 +66,17 @@ export default function Setup() {
   function handleStart(e) {
     e.preventDefault();
 
-    // Bảo đảm không có tên rỗng
     const normalizedPlayers = playersPreview.map((p, i) => ({
       ...p,
       name: (names[i] && names[i].trim()) || defaultName(i),
     }));
 
-    const payload = { players: normalizedPlayers, maxLives: Number(maxLives) };
+    const payload = {
+      players: normalizedPlayers,
+      maxLives: Number(maxLives),
+      gameDurationMinutes: normalizeNonNegative(gameDurationMinutes),
+      questionDurationSeconds: normalizeNonNegative(questionDurationSeconds),
+    };
 
     localStorage.setItem("monopolyRuntime", JSON.stringify(payload));
     navigate("/game", { state: payload, replace: false });
@@ -87,7 +92,7 @@ export default function Setup() {
           <form onSubmit={handleStart} className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <label className="block text-sm font-medium text-slate-700">
-                Số người chơi (2–10)
+                Số người chơi (2-10)
               </label>
               <input
                 type="number"
@@ -133,14 +138,42 @@ export default function Setup() {
                   />
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-3 mt-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">
+                    Timer tổng (phút)
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={gameDurationMinutes}
+                    onChange={(e) => setGameDurationMinutes(normalizeNonNegative(e.target.value))}
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-500"
+                  />
+                  <p className="mt-1 text-xs text-slate-500">Nhập `0` để tắt timer tổng.</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">
+                    Timer câu hỏi (giây)
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={questionDurationSeconds}
+                    onChange={(e) => setQuestionDurationSeconds(normalizeNonNegative(e.target.value))}
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-500"
+                  />
+                  <p className="mt-1 text-xs text-slate-500">Nhập `0` để tắt timer câu hỏi.</p>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-3">
-              <div className="text-sm font-medium text-slate-700">Tên & màu người chơi</div>
+              <div className="text-sm font-medium text-slate-700">Tên và màu người chơi</div>
               <div className="space-y-2">
                 {playersPreview.map((p, idx) => (
                   <div key={p.id} className="flex items-center gap-3">
-                    {/* Tên */}
                     <input
                       type="text"
                       value={names[idx]}
@@ -153,7 +186,6 @@ export default function Setup() {
                       className="w-40 rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-500"
                     />
 
-                    {/* Chọn màu */}
                     <input
                       type="color"
                       value={colors[idx]}
@@ -177,6 +209,9 @@ export default function Setup() {
             <div className="md:col-span-2">
               <div className="rounded-xl border border-slate-200 p-4 bg-slate-50">
                 <div className="text-sm font-semibold mb-2">Xem nhanh</div>
+                <div className="mb-3 text-xs text-slate-600">
+                  Timer tổng: {normalizeNonNegative(gameDurationMinutes)} phút • Timer câu hỏi: {normalizeNonNegative(questionDurationSeconds)} giây
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   {playersPreview.map((p) => (
                     <div key={p.id} className="rounded-lg bg-white border border-slate-200 p-3">

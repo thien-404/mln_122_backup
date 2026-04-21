@@ -1,10 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-export default function ModalQuestion({ open, question, onSubmit }) {
+const formatQuestionTime = (seconds) => {
+  const safe = Math.max(0, Number(seconds) || 0);
+  const mm = String(Math.floor(safe / 60)).padStart(2, "0");
+  const ss = String(safe % 60).padStart(2, "0");
+  return `${mm}:${ss}`;
+};
+
+export default function ModalQuestion({
+  open,
+  question,
+  onSubmit,
+  remainingSeconds = 0,
+  timerEnabled = false,
+  disabled = false,
+}) {
   const [answer, setAnswer] = useState("");
-  const [status, setStatus] = useState(""); // "", "correct", "wrong"
+  const [status, setStatus] = useState("");
   const [shake, setShake] = useState(false);
-  const [showResult, setShowResult] = useState(false); // hiển thị feedback đúng/sai cho trắc nghiệm
+  const [showResult, setShowResult] = useState(false);
+  const submitTimeoutRef = useRef(null);
+  const shakeTimeoutRef = useRef(null);
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     if (open) {
@@ -12,41 +29,49 @@ export default function ModalQuestion({ open, question, onSubmit }) {
       setStatus("");
       setShake(false);
       setShowResult(false);
+      submittingRef.current = false;
     }
+
+    return () => {
+      clearTimeout(submitTimeoutRef.current);
+      clearTimeout(shakeTimeoutRef.current);
+    };
   }, [open]);
 
   if (!open || !question) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (disabled || submittingRef.current) return;
 
     const type = question.type || "text";
     const normalize = (v) =>
       String(v ?? "")
         .trim()
         .toLowerCase()
-        .replace(/\s+/g, " "); // bỏ khoảng trắng thừa
+        .replace(/\s+/g, " ");
 
     const correctAnswer = normalize(question.a);
     const userAnswer = normalize(answer);
     const correct = userAnswer === correctAnswer;
+    submittingRef.current = true;
 
     if (type === "choice") {
-      // hiển thị màu trong danh sách đáp án
       setShowResult(true);
     }
 
     if (correct) {
       setStatus("correct");
-      setTimeout(() => onSubmit(answer), 1000);
-    } else {
-      setStatus("wrong");
-      setShake(true);
-      setTimeout(() => {
-        setShake(false);
-        onSubmit(answer);
-      }, 1200);
+      submitTimeoutRef.current = setTimeout(() => onSubmit(answer), 1000);
+      return;
     }
+
+    setStatus("wrong");
+    setShake(true);
+    shakeTimeoutRef.current = setTimeout(() => {
+      setShake(false);
+      onSubmit(answer);
+    }, 1200);
   };
 
   const renderChoice = () => {
@@ -66,7 +91,6 @@ export default function ModalQuestion({ open, question, onSubmit }) {
           let borderColor = "border-slate-300";
           let bgColor = "bg-white";
 
-          // Khi hiển thị kết quả
           if (showResult) {
             if (normalizedOpt === correctAnswer) {
               borderColor = "border-green-500";
@@ -92,7 +116,7 @@ export default function ModalQuestion({ open, question, onSubmit }) {
                 className="mr-2"
                 onChange={(e) => setAnswer(e.target.value)}
                 checked={answer === opt}
-                disabled={showResult}
+                disabled={showResult || disabled}
               />
               {opt}
             </label>
@@ -105,36 +129,45 @@ export default function ModalQuestion({ open, question, onSubmit }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl">
-        <h3 className="text-lg font-semibold">Câu hỏi</h3>
+        <div className="flex items-center justify-between gap-4">
+          <h3 className="text-lg font-semibold">Câu hỏi</h3>
+          {timerEnabled && (
+            <div className="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">
+              {formatQuestionTime(remainingSeconds)}
+            </div>
+          )}
+        </div>
+
         <p className="mt-2 text-slate-600 whitespace-pre-line">{question.q}</p>
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-3">
-          {/* Hiển thị giao diện theo loại */}
-          {question.type === "choice" && Array.isArray(question.options)
-            ? renderChoice()
-            : (
-              <input
-                className={`w-full rounded-lg border px-3 py-2 outline-none transition-all duration-300
-                  ${
-                    status === "correct"
-                      ? "border-green-500 bg-green-50"
-                      : status === "wrong"
-                      ? "border-red-500 bg-red-50"
-                      : "border-slate-300 focus:ring-2 focus:ring-slate-500"
-                  }
-                  ${shake ? "animate-shake" : ""}`}
-                placeholder="Nhập câu trả lời..."
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                autoFocus
-              />
-            )}
+          {question.type === "choice" && Array.isArray(question.options) ? renderChoice() : (
+            <input
+              className={`w-full rounded-lg border px-3 py-2 outline-none transition-all duration-300
+                ${
+                  status === "correct"
+                    ? "border-green-500 bg-green-50"
+                    : status === "wrong"
+                    ? "border-red-500 bg-red-50"
+                    : "border-slate-300 focus:ring-2 focus:ring-slate-500"
+                }
+                ${shake ? "animate-shake" : ""}`}
+              placeholder="Nhập câu trả lời..."
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              autoFocus
+              disabled={disabled}
+            />
+          )}
 
-          <div className="flex justify-end gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="text-xs text-slate-500">
+              {timerEnabled ? "Hết giờ sẽ tự động tính sai." : "Không giới hạn thời gian câu hỏi."}
+            </div>
             <button
               type="submit"
-              className="rounded-lg bg-black px-4 py-2 text-white hover:opacity-90"
-              disabled={!answer || showResult}
+              className="rounded-lg bg-black px-4 py-2 text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={!answer || showResult || disabled}
             >
               Trả lời
             </button>
@@ -142,7 +175,6 @@ export default function ModalQuestion({ open, question, onSubmit }) {
         </form>
       </div>
 
-      {/* Hiệu ứng shake */}
       <style>
         {`
           @keyframes shake {
