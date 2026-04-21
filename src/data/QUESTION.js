@@ -4,623 +4,215 @@
 // ==========================
 
 export const DEFAULT_QUESTIONS = [
-  // ==========================
-  // 2️⃣ TRẮC NGHIỆM (10)
-  // ==========================
+  {
+    id: 1,
+    type: "choice",
+    q: "Tình thế của nước Việt Nam Dân chủ Cộng hòa sau Cách mạng Tháng Tám được ví như:",
+    options: ["A. Trứng nước trong cơn bão.", "B. Ngàn cân treo sợi tóc.", "C. Đất nước trong khói lửa.", "D. Bình minh sau đêm dài."],
+    a: "B. Ngàn cân treo sợi tóc"
+  },
+  {
+    id: 2,
+    type: "choice",
+    q: "Đâu là thuận lợi về mặt quốc tế của nước ta sau năm 1945?",
+    options: ["A. Hệ thống xã hội chủ nghĩa thế giới đang hình thành.", "B. Các nước đế quốc công nhận độc lập của Việt Nam.", "C. Quân Đồng minh giúp ta xây dựng chính quyền.", "D. Pháp đồng ý rút quân về nước."],
+    a: "A. Hệ thống xã hội chủ nghĩa thế giới đang hình thành."
+  },
+  {
+    id: 3,
+    type: "choice",
+    q: "Hậu quả nặng nề nhất về mặt kinh tế do nạn đói cuối năm 1944 - đầu năm 1945 để lại là:",
+    options: ["A. Nền nông nghiệp bị đình trệ.", "B. Ngân khố quốc gia trống rỗng.", "C. Làm 2 triệu người chết.", "D. Thuế thân không thể thu được."],
+    a: "C. Làm 2 triệu người chết."
+  },
+  {
+    id: 4,
+    type: "choice",
+    q: "Tỷ lệ dân số mù chữ ở Việt Nam ngay sau Cách mạng Tháng Tám là bao nhiêu?",
+    options: ["A. Trên 80%.", "B. Trên 90%.", "C. Hơn 95%.", "D. Gần 100%."],
+    a: "B. Trên 90%."
+  },
+  {
+    id: 5,
+    type: "choice",
+    q: "Chỉ thị \"Kháng chiến kiến quốc\" được Ban Chấp hành Trung ương Đảng ra đời vào thời gian nào?",
+    options: ["A. 2/9/1945.", "B. 23/9/1945.", "C. 25/11/1945.", "D. 6/1/1946."],
+    a: "C. 25/11/1945."
+  },
+  {
+    id: 6,
+    type: "choice",
+    q: "Theo Chỉ thị \"Kháng chiến kiến quốc\", nhiệm vụ nào được xác định là trọng tâm?",
+    options: ["A. Củng cố chính quyền, chống Pháp, bài trừ nội phản và cải thiện đời sống.", "B. Tổng tuyển cử bầu Quốc hội khóa I.", "C. Đàm phán với quân Tưởng để rút quân về nước.", "D. Tập trung toàn lực tiêu diệt giặc ngoại xâm ở miền Bắc."],
+    a: "A. Củng cố chính quyền, chống Pháp, bài trừ nội phản và cải thiện đời sống."
+  },
+  {
+    id: 7,
+    type: "choice",
+    q: "Phong trào \"Hũ gạo tiết kiệm\" và \"Tuần lễ vàng\" được phát động nhằm giải quyết vấn đề gì?",
+    options: ["A. Giặc dốt.", "B. Giặc ngoại xâm.", "C. Giặc đói và ngân khố trống rỗng.", "D. Chuẩn bị cho Tổng tuyển cử."],
+    a: "C. Giặc đói và ngân khố trống rỗng."
+  },
+  {
+    id: 8,
+    type: "choice",
+    q: "Đến cuối năm 1946, phong trào \"Bình dân học vụ\" đã đem lại kết quả gì?",
+    options: ["A. Xóa mù chữ hoàn toàn cho nhân dân cả nước.", "B. Có 1 triệu người biết chữ Quốc ngữ.", "C. Có hơn 2,5 triệu người biết đọc, biết viết chữ Quốc ngữ.", "D. Thành lập được các trường đại học lớn."],
+    a: "C. Có hơn 2,5 triệu người biết đọc, biết viết chữ Quốc ngữ."
+  },
+  {
+    id: 9,
+    type: "choice",
+    q: "Sự kiện nào khẳng định quyền làm chủ thực sự của nhân dân về mặt pháp lý vào ngày 6/1/1946?",
+    options: ["A. Cuộc Tổng tuyển cử đầu tiên bầu ra Quốc hội.", "B. Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập.", "C. Quốc hội thông qua Hiến pháp đầu tiên.", "D. Ký kết Hiệp định Sơ bộ với Pháp."],
+    a: "A. Cuộc Tổng tuyển cử đầu tiên bầu ra Quốc hội."
+  },
+  {
+    id: 10,
+    type: "choice",
+    q: "Hiến pháp đầu tiên của nước Việt Nam Dân chủ Cộng hòa được Quốc hội thông qua vào ngày nào?",
+    options: ["A. 6/1/1946.", "B. 6/3/1946.", "C. 14/9/1946.", "D. 9/11/1946."],
+    a: "D. 9/11/1946."
+  },
   {
     id: 11,
     type: "choice",
-    q: "Ai khẳng định 'Tự do cạnh tranh đẻ ra tập trung sản xuất và dẫn tới độc quyền'?",
-    options: ["A. Adam Smith", "B. C. Mác", "C. Keynes", "D. Lênin"],
-    a: "D. Lênin",
+    q: "Nhân dân Nam Bộ bắt đầu đứng lên kháng chiến chống Pháp trở lại vào ngày nào?",
+    options: ["A. 2/9/1945.", "B. 23/9/1945.", "C. 25/11/1945.", "D. 12/7/1946."],
+    a: "B. 23/9/1945."
   },
   {
     id: 12,
     type: "choice",
-    q: "Nguyên nhân KHÔNG dẫn đến độc quyền là:",
-    options: ["A. Tiến bộ kỹ thuật", "B. Khủng hoảng kinh tế", "C. Sự ngẫu nhiên", "D. Tích tụ vốn"],
-    a: "C. Sự ngẫu nhiên",
+    q: "Sách lược đối ngoại của Đảng đối với quân Tưởng từ tháng 9/1945 đến tháng 3/1946 là:",
+    options: ["A. Kiên quyết đối đầu quân sự.", "B. \"Hòa để tiến\", nhân nhượng có nguyên tắc.", "C. Ký hiệp ước hòa bình lâu dài.", "D. Liên minh với quân Anh để đánh Tưởng."],
+    a: "B. \"Hòa để tiến\", nhân nhượng có nguyên tắc."
   },
   {
     id: 13,
     type: "choice",
-    q: "Độc quyền thường làm gì với giá bán hàng hóa?",
-    options: ["A. Hạ giá để tăng cạnh tranh", "B. Giữ giá ổn định", "C. Nâng giá cao hơn thị trường", "D. Bán theo chi phí"],
-    a: "C. Nâng giá cao hơn thị trường",
+    q: "Tại sao Việt Nam ký Hiệp định Sơ bộ 6/3/1946 với thực dân Pháp?",
+    options: ["A. Vì ta không đủ sức đánh Pháp ở Nam Bộ.", "B. Để đuổi quân Tưởng về nước, tranh thủ thời gian hòa bình chuẩn bị kháng chiến.", "C. Vì Pháp đã công nhận Việt Nam độc lập hoàn toàn.", "D. Để quân Pháp giúp ta tiêu diệt bọn phản động trong nước."],
+    a: "B. Để đuổi quân Tưởng về nước, tranh thủ thời gian hòa bình chuẩn bị kháng chiến."
   },
   {
     id: 14,
     type: "choice",
-    q: "Tác động tiêu cực lớn nhất của độc quyền là:",
-    options: ["A. Giảm năng suất", "B. Gây thiệt hại cho người tiêu dùng", "C. Tăng đầu tư", "D. Giảm giá hàng hóa"],
-    a: "B. Gây thiệt hại cho người tiêu dùng",
+    q: "Trong Hiệp định Sơ bộ 6/3/1946, Pháp công nhận Việt Nam là:",
+    options: ["A. Một quốc gia độc lập.", "B. Một quốc gia tự do.", "C. Một khu tự trị thuộc Pháp.", "D. Một thuộc địa kiểu mới."],
+    a: "B. Một quốc gia tự do."
   },
   {
     id: 15,
     type: "choice",
-    q: "Một trong các tác động tích cực của độc quyền là:",
-    options: ["A. Kìm hãm kỹ thuật", "B. Thúc đẩy tiến bộ kỹ thuật", "C. Giảm năng suất", "D. Tăng giá thành"],
-    a: "B. Thúc đẩy tiến bộ kỹ thuật",
+    q: "Vụ án nào tiêu biểu cho việc Đảng lãnh đạo trấn áp bọn phản động tay sai, bảo vệ chính quyền vào tháng 7/1946?",
+    options: ["A. Vụ án tại Nam Kỳ khởi nghĩa.", "B. Vụ án tại Bắc Sơn.", "C. Vụ án số 7 phố Ôn Như Hầu.", "D. Vụ án tại Dinh Thống nhất."],
+    a: "C. Vụ án số 7 phố Ôn Như Hầu."
   },
   {
     id: 16,
     type: "choice",
-    q: "Theo Lênin, độc quyền nhà nước tư bản hình thành dựa trên sự kết hợp giữa:",
-    options: ["A. Lao động – tư bản", "B. Nhà nước – tư bản độc quyền", "C. Công nhân – nhà nước", "D. Ngân hàng – người dân"],
-    a: "B. Nhà nước – tư bản độc quyền",
+    q: "Tại sao trong giai đoạn 1945–1946, đất nước không nên giải quyết đồng thời cả nạn đói, nạn dốt và giặc ngoại xâm theo cách dàn trải?",
+    options: ["A. Vì nguồn lực quân sự lúc đó đã đủ mạnh...", "B. Vì nhân dân chưa được chuẩn bị...", "C. Vì dàn trải sẽ gây bế tắc, cần ưu tiên điểm sống còn.", "D. Vì bộ máy chính quyền muốn dồn toàn lực..."],
+    a: "C. Vì dàn trải sẽ gây bế tắc, cần ưu tiên điểm sống còn."
   },
   {
     id: 17,
     type: "choice",
-    q: "Giá độc quyền mua thường ở mức:",
-    options: ["A. Cao", "B. Trung bình", "C. Thấp", "D. Bằng giá thị trường"],
-    a: "C. Thấp",
+    q: "Tư duy quản lý hiện đại được đúc kết từ việc xử lý khủng hoảng giai đoạn 1945-1946 là gì?",
+    options: ["A. Xử lý theo cảm xúc.", "B. Tập trung lợi ích tài chính.", "C. Phân loại ưu tiên theo mức độ ảnh hưởng.", "D. Huy động toàn bộ ngay lập tức."],
+    a: "C. Phân loại ưu tiên theo mức độ ảnh hưởng."
   },
   {
     id: 18,
     type: "choice",
-    q: "Tích tụ và tập trung vốn càng lớn thì điều gì xảy ra?",
-    options: ["A. Sản xuất phân tán hơn", "B. Tập trung sản xuất cao hơn", "C. Giảm quy mô doanh nghiệp", "D. Không thay đổi"],
-    a: "B. Tập trung sản xuất cao hơn",
+    q: "Trong ví dụ về đại dịch COVID-19, việc ưu tiên giường bệnh, oxy, vaccine minh chứng cho quy luật nào?",
+    options: ["A. Ưu tiên cứu người.", "B. Kinh tế song hành.", "C. Đối ngoại viện trợ.", "D. Sức mạnh nhân dân hơn y tế."],
+    a: "A. Ưu tiên cứu người."
   },
   {
     id: 19,
     type: "choice",
-    q: "Ngành nào cần duy trì độc quyền để phát triển quốc gia?",
-    options: ["A. Năng lượng", "B. Thời trang", "C. Giải trí", "D. Thực phẩm nhanh"],
-    a: "A. Năng lượng",
+    q: "Khi áp dụng bài học \"xác định điểm sống còn\" vào stress cá nhân, hành động nào phù hợp?",
+    options: ["A. Thức đêm làm hết.", "B. Ưu tiên việc gấp, bỏ việc phụ.", "C. Nghỉ dài hạn.", "D. Chia đều mọi việc."],
+    a: "B. Ưu tiên việc gấp, bỏ việc phụ."
   },
   {
     id: 20,
     type: "choice",
-    q: "Biện pháp kiểm soát tác động tiêu cực của độc quyền là:",
-    options: ["A. Luật cạnh tranh và minh bạch", "B. Giảm đầu tư công", "C. Tăng thuế thu nhập", "D. Hạn chế lao động"],
-    a: "A. Luật cạnh tranh và minh bạch",
-  },
-];
-
-export const CASE_QUESTIONS = [
-  // ==========================
-  // 🟩 TRẮC NGHIỆM (40)
-  // ==========================
-  // ==========================
-// 🟩 TRẮC NGHIỆM (40) – ĐÃ CÂN BẰNG ĐÁP ÁN
-// ==========================
-{
-  id: 51,
-  type: "choice",
-  q: "Theo V.I. Lênin, giai đoạn cao nhất của chủ nghĩa tư bản là:",
-  options: [
-    "A. Chủ nghĩa tư bản tự do cạnh tranh",
-    "B. Chủ nghĩa tư bản độc quyền",
-    "C. Chủ nghĩa tư bản nhà nước",
-    "D. Chủ nghĩa xã hội sơ khai",
-  ],
-  a: "B. Chủ nghĩa tư bản độc quyền",
-},
-{
-  id: 52,
-  type: "choice",
-  q: "Đặc điểm đầu tiên của độc quyền tư bản chủ nghĩa theo Lênin là:",
-  options: [
-    "A. Xuất khẩu tư bản",
-    "B. Chi phối nhà nước",
-    "C. Tích tụ và tập trung tư bản",
-    "D. Tư bản tài chính",
-  ],
-  a: "C. Tích tụ và tập trung tư bản",
-},
-{
-  id: 53,
-  type: "choice",
-  q: "Sự hợp nhất giữa tư bản công nghiệp và tư bản ngân hàng hình thành:",
-  options: [
-    "A. Tư bản tài chính – tài phiệt",
-    "B. Tư bản thương nghiệp",
-    "C. Tư bản đầu cơ",
-    "D. Tư bản xuất khẩu",
-  ],
-  a: "A. Tư bản tài chính – tài phiệt",
-},
-{
-  id: 54,
-  type: "choice",
-  q: "Hành vi các tập đoàn chia nhau thị trường, loại bỏ cạnh tranh được gọi là:",
-  options: [
-    "A. Tích tụ vốn",
-    "B. Cạnh tranh tự do",
-    "C. Phân chia thị trường",
-    "D. Hợp tác sản xuất",
-  ],
-  a: "C. Phân chia thị trường",
-},
-{
-  id: 55,
-  type: "choice",
-  q: "Theo Lênin, đặc điểm thứ năm của độc quyền tư bản chủ nghĩa là:",
-  options: [
-    "A. Tăng năng suất lao động",
-    "B. Chi phối nhà nước",
-    "C. Xuất khẩu tư bản",
-    "D. Mở rộng sản xuất nội địa",
-  ],
-  a: "B. Chi phối nhà nước",
-},
-{
-  id: 56,
-  type: "choice",
-  q: "Theo Mác – Lênin, độc quyền tư bản chủ nghĩa dẫn đến sự:",
-  options: [
-    "A. Bình đẳng kinh tế",
-    "B. Cạnh tranh công bằng hơn",
-    "C. Tập trung quyền lực kinh tế vào một số ít nhóm",
-    "D. Tăng cơ hội cho doanh nghiệp nhỏ",
-  ],
-  a: "C. Tập trung quyền lực kinh tế vào một số ít nhóm",
-},
-{
-  id: 57,
-  type: "choice",
-  q: "Các tập đoàn như Google, Amazon, Shopee thể hiện đặc điểm nào của chủ nghĩa tư bản hiện đại?",
-  options: [
-    "A. Cạnh tranh tự do tuyệt đối",
-    "B. Sản xuất thủ công và phân tán",
-    "C. Tư bản tài chính và xuất khẩu tư bản",
-    "D. Không có ảnh hưởng nhà nước",
-  ],
-  a: "C. Tư bản tài chính và xuất khẩu tư bản",
-},
-{
-  id: 58,
-  type: "choice",
-  q: "Cụm từ 'sự chết của cạnh tranh' mà Lênin đề cập nói đến:",
-  options: [
-    "A. Giai đoạn tự do cạnh tranh mở rộng",
-    "B. Sự phá sản của doanh nghiệp nhỏ",
-    "C. Thị trường tự điều tiết hoàn hảo",
-    "D. Sự hình thành các tập đoàn độc quyền lớn",
-  ],
-  a: "D. Sự hình thành các tập đoàn độc quyền lớn",
-},
-{
-  id: 59,
-  type: "choice",
-  q: "Một biểu hiện của 'tư bản tài chính' trong thời đại số là:",
-  options: [
-    "A. Sự kiểm soát ngân hàng bởi nhà nước",
-    "B. Tăng thuế doanh nghiệp nhỏ",
-    "C. Tập đoàn công nghệ sở hữu cả nền tảng thanh toán và ngân hàng số",
-    "D. Tăng lương công nhân",
-  ],
-  a: "C. Tập đoàn công nghệ sở hữu cả nền tảng thanh toán và ngân hàng số",
-},
-{
-  id: 60,
-  type: "choice",
-  q: "Khi Shopee và Tiki kiểm soát 70% thị phần TMĐT Việt Nam, điều đó phản ánh:",
-  options: [
-    "A. Cạnh tranh hoàn hảo",
-    "B. Cạnh tranh tự do",
-    "C. Độc quyền nhóm (oligopoly)",
-    "D. Kinh tế kế hoạch hóa",
-  ],
-  a: "C. Độc quyền nhóm (oligopoly)",
-},
-{
-  id: 61,
-  type: "choice",
-  q: "Chiến lược khuyến mãi lớn của Shopee và Tiki thực chất nhằm:",
-  options: [
-    "A. Giảm chi phí logistics",
-    "B. Loại bỏ đối thủ nhỏ khỏi thị trường",
-    "C. Tăng năng suất lao động",
-    "D. Tăng phúc lợi người tiêu dùng",
-  ],
-  a: "B. Loại bỏ đối thủ nhỏ khỏi thị trường",
-},
-{
-  id: 62,
-  type: "choice",
-  q: "Việc các nhà bán hàng bị ép giảm giá, tăng phí, phản ánh:",
-  options: [
-    "A. Tác động của thuế",
-    "B. Chính sách hỗ trợ SME",
-    "C. Sức ép từ tập đoàn độc quyền",
-    "D. Sự cạnh tranh bình đẳng",
-  ],
-  a: "C. Sức ép từ tập đoàn độc quyền",
-},
-{
-  id: 63,
-  type: "choice",
-  q: "Khi người bán phải tuân thủ nghiêm ngặt quy tắc của sàn TMĐT, điều đó cho thấy:",
-  options: [
-    "A. Quyền lực của nền tảng độc quyền",
-    "B. Tự do tuyệt đối trong kinh doanh",
-    "C. Giảm vai trò của dữ liệu",
-    "D. Cạnh tranh mở rộng",
-  ],
-  a: "A. Quyền lực của nền tảng độc quyền",
-},
-{
-  id: 64,
-  type: "choice",
-  q: "Tác động chính của độc quyền đối với giá cả thị trường là:",
-  options: [
-    "A. Giá ổn định lâu dài",
-    "B. Giá hoàn toàn phụ thuộc vào người tiêu dùng",
-    "C. Giá tăng do thiếu cạnh tranh",
-    "D. Giá giảm do cạnh tranh",
-  ],
-  a: "C. Giá tăng do thiếu cạnh tranh",
-},
-{
-  id: 65,
-  type: "choice",
-  q: "Một biểu hiện của 'xuất khẩu tư bản' trong kỷ nguyên số là:",
-  options: [
-    "A. Xuất khẩu hàng hóa nông sản",
-    "B. Đầu tư của tập đoàn nước ngoài vào nền tảng TMĐT nội địa",
-    "C. Chuyển giao công nghệ miễn phí",
-    "D. Tăng tiêu dùng nội địa",
-  ],
-  a: "B. Đầu tư của tập đoàn nước ngoài vào nền tảng TMĐT nội địa",
-},
-{
-  id: 66,
-  type: "choice",
-  q: "Khi Shopee tăng phí hàng năm 15–25%, đó là biểu hiện của:",
-  options: [
-    "A. Khai thác quyền lực độc quyền",
-    "B. Hỗ trợ người bán nhỏ",
-    "C. Điều tiết của nhà nước",
-    "D. Tăng chi phí vận hành hợp lý",
-  ],
-  a: "A. Khai thác quyền lực độc quyền",
-},
-{
-  id: 67,
-  type: "choice",
-  q: "Người tiêu dùng bị ảnh hưởng như thế nào trong thị trường độc quyền?",
-  options: [
-    "A. Không có thay đổi đáng kể",
-    "B. Dễ đàm phán với doanh nghiệp lớn",
-    "C. Giá cao, ít lựa chọn và quyền lợi bị hạn chế",
-    "D. Giá thấp hơn, nhiều lựa chọn hơn",
-  ],
-  a: "C. Giá cao, ít lựa chọn và quyền lợi bị hạn chế",
-},
-{
-  id: 68,
-  type: "choice",
-  q: "Một đặc điểm của độc quyền hiện đại là khả năng:",
-  options: [
-    "A. Kiểm soát chính sách và nhà nước",
-    "B. Giảm vai trò công nghệ",
-    "C. Tách biệt khỏi thị trường quốc tế",
-    "D. Tự điều tiết cạnh tranh",
-  ],
-  a: "A. Kiểm soát chính sách và nhà nước",
-},
-{
-  id: 69,
-  type: "choice",
-  q: "Tỷ lệ người bán phụ thuộc 85% trên nền tảng Shopee phản ánh:",
-  options: [
-    "A. Sự phụ thuộc và rủi ro độc quyền",
-    "B. Sự tự do thị trường cao",
-    "C. Tăng cạnh tranh",
-    "D. Hỗ trợ SME hiệu quả",
-  ],
-  a: "A. Sự phụ thuộc và rủi ro độc quyền",
-},
-{
-  id: 70,
-  type: "choice",
-  q: "Giá tăng 20% và lựa chọn giảm 30% là hậu quả của:",
-  options: [
-    "A. Tự do hóa thương mại",
-    "B. Chính sách giảm giá",
-    "C. Độc quyền và thiếu cạnh tranh",
-    "D. Phát triển sản xuất nội địa",
-  ],
-  a: "C. Độc quyền và thiếu cạnh tranh",
-},
-{
-  id: 71,
-  type: "choice",
-  q: "Startup gặp khó khăn trong môi trường độc quyền vì:",
-  options: [
-    "A. Thiếu vốn, công nghệ và khả năng tiếp cận thị trường",
-    "B. Có quá nhiều ưu đãi thuế",
-    "C. Không chịu áp lực cạnh tranh",
-    "D. Nhà nước bảo hộ quá mức",
-  ],
-  a: "A. Thiếu vốn, công nghệ và khả năng tiếp cận thị trường",
-},
-{
-  id: 72,
-  type: "choice",
-  q: "Sinh viên trong nền kinh tế độc quyền đối mặt với điều gì?",
-  options: [
-    "A. Thu nhập tăng nhanh",
-    "B. Dễ dàng khởi nghiệp",
-    "C. Phụ thuộc vào tập đoàn lớn và lương khởi điểm thấp",
-    "D. Cơ hội việc làm đa dạng hơn",
-  ],
-  a: "C. Phụ thuộc vào tập đoàn lớn và lương khởi điểm thấp",
-},
-{
-  id: 73,
-  type: "choice",
-  q: "Độc quyền trong TMĐT gây hại lớn nhất cho nhóm nào?",
-  options: ["A. Chính phủ", "B. Doanh nghiệp nhỏ", "C. Nhà đầu tư lớn", "D. Khách hàng VIP"],
-  a: "B. Doanh nghiệp nhỏ",
-},
-{
-  id: 74,
-  type: "choice",
-  q: "Đề xuất hành động nào giúp sinh viên tránh phụ thuộc vào tập đoàn độc quyền?",
-  options: [
-    "A. Tránh học công nghệ mới",
-    "B. Phát triển kỹ năng độc lập và tham gia cộng đồng khởi nghiệp",
-    "C. Từ bỏ việc làm trong lĩnh vực số",
-    "D. Tập trung tiêu dùng trên một nền tảng duy nhất",
-  ],
-  a: "B. Phát triển kỹ năng độc lập và tham gia cộng đồng khởi nghiệp",
-},
-{
-  id: 75,
-  type: "choice",
-  q: "Theo Mác – Lênin, độc quyền không loại bỏ hoàn toàn cạnh tranh mà:",
-  options: [
-    "A. Biến cạnh tranh thành nội bộ giữa các tập đoàn",
-    "B. Dừng sự đổi mới",
-    "C. Hủy diệt mọi doanh nghiệp nhỏ",
-    "D. Tăng cạnh tranh giá",
-  ],
-  a: "A. Biến cạnh tranh thành nội bộ giữa các tập đoàn",
-},
-{
-  id: 76,
-  type: "choice",
-  q: "Độc quyền tư bản chủ nghĩa khác với độc quyền nhà nước ở chỗ:",
-  options: [
-    "A. Phục vụ lợi ích công cộng",
-    "B. Không tích lũy tư bản",
-    "C. Do tư nhân kiểm soát lợi nhuận",
-    "D. Không ảnh hưởng chính sách",
-  ],
-  a: "C. Do tư nhân kiểm soát lợi nhuận",
-},
-{
-  id: 77,
-  type: "choice",
-  q: "Lênin cho rằng giai đoạn độc quyền tư bản chủ nghĩa làm bộc lộ:",
-  options: [
-    "A. Bình đẳng giữa các doanh nghiệp",
-    "B. Tăng phúc lợi xã hội",
-    "C. Mâu thuẫn nội tại sâu sắc của hệ thống tư bản",
-    "D. Sự công bằng kinh tế",
-  ],
-  a: "C. Mâu thuẫn nội tại sâu sắc của hệ thống tư bản",
-},
-{
-  id: 78,
-  type: "choice",
-  q: "Tỷ lệ thất bại cao của startup trong thị trường độc quyền phản ánh:",
-  options: [
-    "A. Sự bình đẳng cơ hội",
-    "B. Chính sách hỗ trợ tốt",
-    "C. Thiếu người tiêu dùng",
-    "D. Môi trường cạnh tranh không công bằng",
-  ],
-  a: "D. Môi trường cạnh tranh không công bằng",
-},
-{
-  id: 79,
-  type: "choice",
-  q: "Một trong các giải pháp quan trọng cho sinh viên là:",
-  options: [
-    "A. Học tư duy kinh tế số và công nghệ mới",
-    "B. Giữ nguyên kỹ năng cũ",
-    "C. Tránh tham gia thị trường",
-    "D. Chỉ học lý thuyết cổ điển",
-  ],
-  a: "A. Học tư duy kinh tế số và công nghệ mới",
-},
-{
-  id: 80,
-  type: "choice",
-  q: "Đặc điểm nào KHÔNG thuộc 5 đặc điểm của Lênin?",
-  options: [
-    "A. Tích tụ tư bản",
-    "B. Tư bản tài chính",
-    "C. Xuất khẩu tư bản",
-    "D. Tư hữu hóa nông nghiệp",
-  ],
-  a: "D. Tư hữu hóa nông nghiệp",
-},
-{
-  id: 81,
-  type: "choice",
-  q: "Shopee và Tiki kiểm soát 70% thị phần là biểu hiện của:",
-  options: ["A. Thị trường tự do", "B. Kinh tế hỗn hợp", "C. Độc quyền nhóm", "D. Cạnh tranh hoàn hảo"],
-  a: "C. Độc quyền nhóm",
-},
-{
-  id: 82,
-  type: "choice",
-  q: "Các tập đoàn độc quyền ảnh hưởng đến chính sách nhà nước thông qua:",
-  options: [
-    "A. Vận động hành lang và tác động kinh tế",
-    "B. Giảm vốn đầu tư",
-    "C. Cấm thương mại quốc tế",
-    "D. Tăng thuế người dân",
-  ],
-  a: "A. Vận động hành lang và tác động kinh tế",
-},
-{
-  id: 83,
-  type: "choice",
-  q: "Sự phụ thuộc của doanh nghiệp nhỏ vào nền tảng lớn gây ra:",
-  options: [
-    "A. Mất quyền tự chủ và lợi nhuận giảm",
-    "B. Giảm chi phí sản xuất",
-    "C. Tăng sáng tạo sản phẩm",
-    "D. Nâng cao năng lực cạnh tranh",
-  ],
-  a: "A. Mất quyền tự chủ và lợi nhuận giảm",
-},
-{
-  id: 84,
-  type: "choice",
-  q: "Trong bối cảnh độc quyền, vai trò của nhà nước là:",
-  options: [
-    "A. Điều tiết và chống độc quyền",
-    "B. Không can thiệp",
-    "C. Tăng độc quyền cho tư bản",
-    "D. Giảm luật cạnh tranh",
-  ],
-  a: "A. Điều tiết và chống độc quyền",
-},
-{
-  id: 85,
-  type: "choice",
-  q: "Theo lý luận Mác – Lênin, độc quyền ra đời từ:",
-  options: [
-    "A. Kết quả tất yếu của tự do cạnh tranh",
-    "B. Quyết định của nhà nước",
-    "C. Chính sách thuế cao",
-    "D. Sự sụp đổ kinh tế",
-  ],
-  a: "A. Kết quả tất yếu của tự do cạnh tranh",
-},
-{
-  id: 86,
-  type: "choice",
-  q: "Độc quyền trong kinh tế số thường dựa vào yếu tố nào?",
-  options: [
-    "A. Dữ liệu và công nghệ nền tảng",
-    "B. Lao động thủ công",
-    "C. Tài nguyên thiên nhiên",
-    "D. Sản xuất vật chất truyền thống",
-  ],
-  a: "A. Dữ liệu và công nghệ nền tảng",
-},
-{
-  id: 87,
-  type: "choice",
-  q: "Tại sao người tiêu dùng cần hiểu bản chất của độc quyền?",
-  options: [
-    "A. Để lựa chọn tiêu dùng có trách nhiệm và bảo vệ quyền lợi",
-    "B. Để phụ thuộc hoàn toàn vào nền tảng",
-    "C. Để tăng tiêu dùng hàng xa xỉ",
-    "D. Để giảm chi tiêu giáo dục",
-  ],
-  a: "A. Để lựa chọn tiêu dùng có trách nhiệm và bảo vệ quyền lợi",
-},
-{
-  id: 88,
-  type: "choice",
-  q: "Khái niệm 'phân chia thị trường' trong TMĐT thể hiện qua:",
-  options: [
-    "A. Sự thỏa thuận ngầm giữa các sàn lớn về phí và khuyến mãi",
-    "B. Giảm giá mạnh cho SME",
-    "C. Cạnh tranh quốc tế bình đẳng",
-    "D. Tự do cạnh tranh hoàn toàn",
-  ],
-  a: "A. Sự thỏa thuận ngầm giữa các sàn lớn về phí và khuyến mãi",
-},
-{
-  id: 89,
-  type: "choice",
-  q: "Khi tập đoàn lớn chi phối nhà nước, hiện tượng này được gọi là:",
-  options: [
-    "A. Toàn cầu hóa văn hóa",
-    "B. Xã hội hóa sản xuất",
-    "C. Kinh tế chia sẻ",
-    "D. Chủ nghĩa tư bản tài phiệt",
-  ],
-  a: "D. Chủ nghĩa tư bản tài phiệt",
-},
-{
-  id: 90,
-  type: "choice",
-  q: "Hành động nào thể hiện sinh viên có nhận thức đúng trước độc quyền?",
-  options: [
-    "A. Phụ thuộc vào nền tảng lớn",
-    "B. Tránh học kinh tế",
-    "C. Chạy theo khuyến mãi bất kể rủi ro",
-    "D. Phát triển năng lực, học công nghệ mới, và tiêu dùng có chọn lọc",
-  ],
-  a: "D. Phát triển năng lực, học công nghệ mới, và tiêu dùng có chọn lọc",
-},
-
-
-  // ==========================
-  // 🟦 ĐIỀN KHUYẾT (10)
-  // ==========================
-  {
-    id: 91,
-    type: "text",
-    q: "Theo Lênin, năm đặc điểm kinh tế của chủ nghĩa tư bản độc quyền gồm: ________, tư bản tài chính, xuất khẩu tư bản, phân chia thị trường, chi phối nhà nước. (4 chữ)",
-    a: "Tích tụ tư bản",
+    q: "Điểm nổi bật nhất giúp đất nước vượt qua khó khăn 1945-1946 là gì?",
+    options: ["A. Viện trợ quốc tế.", "B. Địch suy yếu.", "C. Ngoại giao giỏi.", "D. Nhân dân đóng góp."],
+    a: "D. Nhân dân đóng góp."
   },
   {
-    id: 92,
-    type: "text",
-    q: "Độc quyền được gọi là 'sự chết của ________' vì quyền lực tập trung khiến cạnh tranh tự do bị triệt tiêu.(2 chữ)",
-    a: "cạnh tranh",
+    id: 21,
+    type: "choice",
+    q: "Một tổ chức hiện đại chỉ thực sự vững mạnh khi nào?",
+    options: ["A. Vốn lớn.", "B. Tạo được niềm tin.", "C. Triệt tiêu đối thủ.", "D. Kỷ luật thép."],
+    a: "B. Tạo được niềm tin."
   },
   {
-    id: 93,
-    type: "text",
-    q: "Tư bản tài chính là sự hợp nhất giữa tư bản công nghiệp và ________, cho phép các tập đoàn chi phối chính sách nhà nước.(4 chu)",
-    a: "tư bản ngân hàng",
+    id: 22,
+    type: "choice",
+    q: "Các hoạt động cứu trợ tự phát tương đồng với sự kiện lịch sử nào?",
+    options: ["A. Ký hiệp định.", "B. Nhân dân góp gạo, vàng, học chữ.", "C. Giải tán Đảng.", "D. Phân tích vĩ mô."],
+    a: "B. Nhân dân góp gạo, vàng, học chữ."
   },
   {
-    id: 94,
-    type: "text",
-    q: "Shopee và Tiki chiếm hơn ________% thị phần TMĐT Việt Nam, tạo nên tình trạng độc quyền nhóm.",
-    a: "70",
+    id: 23,
+    type: "choice",
+    q: "Bài học cốt lõi về nguồn lực từ lịch sử là gì?",
+    options: ["A. Tài nguyên quyết định.", "B. Con người quan trọng hơn vật chất.", "C. Công nghiệp trước.", "D. Viện trợ quốc tế."],
+    a: "B. Con người quan trọng hơn vật chất."
   },
   {
-    id: 95,
-    type: "text",
-    q: "Startup gặp khó trong môi trường độc quyền vì thiếu ________, công nghệ và dữ liệu.(1 chữ)",
-    a: "vốn",
+    id: 24,
+    type: "choice",
+    q: "Mục đích chiến lược của nhân nhượng là gì?",
+    options: ["A. Tìm sự thương cảm.", "B. Đầu hàng.", "C. Dồn ngân sách xã hội.", "D. Tránh phân tán lực lượng, tranh thủ thời gian."],
+    a: "D. Tránh phân tán lực lượng, tranh thủ thời gian."
   },
   {
-    id: 96,
-    type: "text",
-    q: "Độc quyền làm giá hàng hóa tăng, giảm lựa chọn và khiến người lao động chịu áp lực về ________.(2 chữ)",
-    a: "thu nhập",
+    id: 25,
+    type: "choice",
+    q: "Việc \"giải tán Đảng về hình thức\" minh họa tư duy nào?",
+    options: ["A. Pareto.", "B. Nội bộ.", "C. Hy sinh hình thức để bảo vệ cốt lõi.", "D. Sụp đổ chiến lược."],
+    a: "C. Hy sinh hình thức để bảo vệ cốt lõi."
   },
   {
-    id: 97,
-    type: "text",
-    q: "Chi phối nhà nước là hiện tượng tập đoàn lớn tác động đến ________ để bảo vệ lợi ích riêng.(2 chữ)",
-    a: "chính sách",
+    id: 26,
+    type: "choice",
+    q: "Instagram pivot phản ánh bài học nào?",
+    options: ["A. Truyền thông.", "B. Linh hoạt thay đổi.", "C. Fix lỗi.", "D. Bỏ lợi ích cốt lõi."],
+    a: "B. Linh hoạt thay đổi."
   },
   {
-    id: 98,
-    type: "text",
-    q: "Sinh viên cần học công nghệ, khởi nghiệp độc lập và ________ có chọn lọc để tránh phụ thuộc vào tập đoàn lớn.(2 chữ)",
-    a: "tiêu dùng",
+    id: 27,
+    type: "choice",
+    q: "Ứng xử nào phản ánh tư duy \"lùi để tiến\"?",
+    options: ["A. Bỏ học ngay.", "B. Ép bản thân.", "C. Vừa học vừa học thêm kỹ năng mới.", "D. Gây áp lực dư luận."],
+    a: "C. Vừa học vừa học thêm kỹ năng mới."
   },
   {
-    id: 99,
-    type: "text",
-    q: "Nhà nước cần ban hành luật ________ và hỗ trợ doanh nghiệp nhỏ để điều tiết thị trường TMĐT độc quyền.(2 chữ)",
-    a: "cạnh tranh",
+    id: 28,
+    type: "choice",
+    q: "Điểm chung giữa phong tỏa COVID và ký Sơ bộ là gì?",
+    options: ["A. Áp đặt.", "B. Huy động tài chính.", "C. Hy sinh ngắn hạn để bảo vệ sống còn.", "D. Sai lầm."],
+    a: "C. Hy sinh ngắn hạn để bảo vệ sống còn."
   },
   {
-    id: 100,
-    type: "text",
-    q: "Lý luận độc quyền tư bản giúp cá nhân hiểu bản chất tư bản và hành động theo hướng ________ và sáng tạo.(2 chữ)",
-    a: "công bằng",
+    id: 29,
+    type: "choice",
+    q: "Câu tục ngữ minh họa điều gì?",
+    options: ["A. Liên minh quốc tế.", "B. Lãnh đạo nhạy bén.", "C. Chia nhỏ công việc.", "D. Sức mạnh đoàn kết."],
+    a: "D. Sức mạnh đoàn kết."
   },
-
-];
+  {
+    id: 30,
+    type: "choice",
+    q: "Thông điệp lớn nhất của bài là gì?",
+    options: ["A. Quản trị phương Tây.", "B. Cảm xúc tiêu cực.", "C. Chọn ưu tiên, dựa vào con người, linh hoạt.", "D. Lặp lại thất bại."],
+    a: "C. Chọn ưu tiên, dựa vào con người, linh hoạt."
+  }
+]
 

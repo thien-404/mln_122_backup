@@ -14,12 +14,21 @@ import {
   MAX_LIVES,
 } from "./lib/constants";
 import { useFitCellSize } from "./hooks/useFitCellSize";
-import { DEFAULT_QUESTIONS, CASE_QUESTIONS } from "./data/QUESTION";
+import { DEFAULT_QUESTIONS } from "./data/QUESTION";
 
 const PRICE_BUMP_FACTOR = 1.2;
-const QUESTIONS = [...DEFAULT_QUESTIONS, ...CASE_QUESTIONS];
+const LIFE_SCORE_VALUE = 500;
+const QUESTIONS = [...DEFAULT_QUESTIONS];
 
-const pickQuestion = () => QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
+const buildQuestionPool = (questions) => {
+  const pool = [...questions];
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool;
+};
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const normalizeAnswer = (value) =>
   String(value ?? "")
@@ -63,6 +72,7 @@ export default function Game() {
       { id: "P3", name: "Player 3", color: "#10b981", lives: 3, money: 300, position: 0 },
     ]
   );
+  const [eliminatedPlayers, setEliminatedPlayers] = useState([]);
 
   const MAX_LIVES_RUNTIME = runtime?.maxLives ?? MAX_LIVES;
   const GAME_DURATION_SECONDS = Math.max(0, Number(runtime?.gameDurationMinutes) || 0) * 60;
@@ -72,6 +82,7 @@ export default function Game() {
 
   const [turnIdx, setTurnIdx] = useState(0);
   const turnIdxRef = useRef(turnIdx);
+  const questionPoolRef = useRef(buildQuestionPool(QUESTIONS));
   useEffect(() => {
     turnIdxRef.current = turnIdx;
   }, [turnIdx]);
@@ -81,6 +92,10 @@ export default function Game() {
     playersRef.current = players;
   }, [players]);
 
+  const eliminatedPlayersRef = useRef(eliminatedPlayers);
+  useEffect(() => {
+    eliminatedPlayersRef.current = eliminatedPlayers;
+  }, [eliminatedPlayers]);
   const tileListRef = useRef(tileList);
   useEffect(() => {
     tileListRef.current = tileList;
@@ -123,17 +138,31 @@ export default function Game() {
       if (tile.ownerId !== player.id) return sum;
       return sum + (tile.price || 0);
     }, 0);
+    const lifeScore = player.lives * LIFE_SCORE_VALUE;
 
     return {
       ...player,
       propertyValue,
-      totalWorth: player.money + propertyValue,
+      lifeScore,
+      totalWorth: player.money + propertyValue + lifeScore,
     };
   }
 
-  function buildFinalStandings(playerList = playersRef.current, tiles = tileListRef.current) {
-    const standings = playerList
-      .map((player) => calculatePlayerWorth(player, tiles))
+  function buildFinalStandings(
+    activePlayers = playersRef.current,
+    eliminatedList = eliminatedPlayersRef.current,
+    tiles = tileListRef.current
+  ) {
+    const aliveStandings = activePlayers.map((player) => calculatePlayerWorth(player, tiles));
+    const eliminatedStandings = eliminatedList.map((player) => ({
+      ...player,
+      lives: 0,
+      propertyValue: player.propertyValue ?? 0,
+      lifeScore: 0,
+      totalWorth: player.money + (player.propertyValue ?? 0),
+    }));
+
+    const standings = [...aliveStandings, ...eliminatedStandings]
       .sort((a, b) => {
         if (b.totalWorth !== a.totalWorth) return b.totalWorth - a.totalWorth;
         if (b.lives !== a.lives) return b.lives - a.lives;
@@ -150,7 +179,7 @@ export default function Game() {
     return { standings, winners };
   }
 
-  function finishGame(reason) {
+  function finishGame(reason, standingsSource) {
     if (gameOverRef.current) return;
 
     questionResolutionRef.current = true;
@@ -163,7 +192,13 @@ export default function Game() {
     setIsMoving(false);
     setRemainingQuestionSeconds(0);
 
-    const { standings, winners } = buildFinalStandings();
+    const { standings, winners } = standingsSource
+      ? buildFinalStandings(
+          standingsSource.activePlayers,
+          standingsSource.eliminatedPlayers,
+          standingsSource.tiles
+        )
+      : buildFinalStandings();
     setGameOver({ reason, standings, winners });
   }
 
@@ -184,25 +219,39 @@ export default function Game() {
     if (!victim) return;
     const victimId = victim.id;
     const prevLen = playersRef.current.length;
+    const nextLen = prevLen - 1;
+    const victimPropertyValue = tileListRef.current.reduce((sum, tile) => {
+      if (tile.ownerId !== victimId) return sum;
+      return sum + (tile.price || 0);
+    }, 0);
+    const eliminatedSnapshot = {
+      ...victim,
+      lives: 0,
+      propertyValue: victimPropertyValue,
+      lifeScore: 0,
+      totalWorth: victim.money + victimPropertyValue,
+    };
 
-    setTileList((prev) =>
-      prev.map((tile) =>
-        tile.ownerId === victimId
-          ? {
-              ...tile,
-              ownerId: null,
-              purchasePrice: null,
-              price: Math.ceil((tile.price || 0) * PRICE_BUMP_FACTOR),
-            }
-          : tile
-      )
+    const nextTiles = tileListRef.current.map((tile) =>
+      tile.ownerId === victimId
+        ? {
+            ...tile,
+            ownerId: null,
+            purchasePrice: null,
+            price: Math.ceil((tile.price || 0) * PRICE_BUMP_FACTOR),
+          }
+        : tile
     );
+    setTileList(nextTiles);
 
-    setPlayers((prev) => prev.filter((_, i) => i !== idx));
+    const nextPlayers = playersRef.current.filter((_, i) => i !== idx);
+    setPlayers(nextPlayers);
+    const withoutVictim = eliminatedPlayersRef.current.filter((player) => player.id !== victimId);
+    const nextEliminatedPlayers = [...withoutVictim, eliminatedSnapshot];
+    setEliminatedPlayers(nextEliminatedPlayers);
 
     setTurnIdx((prev) => {
       if (prev === idx) {
-        const nextLen = prevLen - 1;
         return nextLen <= 0 ? 0 : Math.min(prev, nextLen - 1);
       }
       if (prev > idx) return prev - 1;
@@ -212,6 +261,14 @@ export default function Game() {
     setOfferBuyForIdx((value) => (value == null ? value : value === idx ? null : value > idx ? value - 1 : value));
     setPenaltyForIdx((value) => (value == null ? value : value === idx ? null : value > idx ? value - 1 : value));
     setPendingIdx(null);
+
+    if (nextLen === 1) {
+      finishGame("last-survivor", {
+        activePlayers: nextPlayers,
+        eliminatedPlayers: nextEliminatedPlayers,
+        tiles: nextTiles,
+      });
+    }
   }
 
   function endTurn() {
@@ -223,10 +280,23 @@ export default function Game() {
     });
   }
 
+  function takeNextQuestion() {
+    if (QUESTIONS.length === 0) return null;
+    if (questionPoolRef.current.length === 0) {
+      questionPoolRef.current = buildQuestionPool(QUESTIONS);
+    }
+    return questionPoolRef.current.pop() ?? null;
+  }
+
   function openQuestionForPlayer(idx) {
+    const nextQuestion = takeNextQuestion();
+    if (!nextQuestion) {
+      endTurn();
+      return;
+    }
     questionResolutionRef.current = false;
     setPendingIdx(idx);
-    setCurrQ(pickQuestion());
+    setCurrQ(nextQuestion);
     setRemainingQuestionSeconds(questionTimerEnabled ? QUESTION_DURATION_SECONDS : 0);
     setQOpen(true);
   }
@@ -561,7 +631,7 @@ export default function Game() {
               <div>
                 <h2 className="text-2xl font-bold">Hết game</h2>
                 <p className="text-slate-600 mt-1">
-                  {gameOver.reason === "timeout" ? "Hết thời gian trận đấu." : "Trận đấu đã kết thúc."}
+                  {gameOver.reason === "timeout" ? "Time is up." : gameOver.reason === "last-survivor" ? "Only one player survived." : "The match has ended."}
                 </p>
               </div>
               <div className="rounded-xl bg-emerald-50 px-4 py-2 text-right">
@@ -571,10 +641,11 @@ export default function Game() {
             </div>
 
             <div className="mt-5 overflow-hidden rounded-xl border border-slate-200">
-              <div className="grid grid-cols-[56px_1fr_110px_90px_110px] bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <div className="grid grid-cols-[56px_1fr_110px_120px_90px_110px] bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
                 <div>Hạng</div>
                 <div>Người chơi</div>
                 <div>Tiền</div>
+                <div>Property</div>
                 <div>Mạng</div>
                 <div>Tổng TS</div>
               </div>
@@ -582,13 +653,14 @@ export default function Game() {
                 {gameOver.standings.map((player, index) => (
                   <div
                     key={player.id}
-                    className="grid grid-cols-[56px_1fr_110px_90px_110px] items-center px-4 py-3 text-sm"
+                    className="grid grid-cols-[56px_1fr_110px_120px_90px_110px] items-center px-4 py-3 text-sm"
                   >
                     <div className="font-semibold text-slate-700">#{index + 1}</div>
                     <div className="font-semibold" style={{ color: player.color }}>
                       {player.name}
                     </div>
                     <div>${player.money}</div>
+                    <div>${player.propertyValue}</div>
                     <div>{player.lives}</div>
                     <div className="font-semibold">${player.totalWorth}</div>
                   </div>
@@ -597,7 +669,7 @@ export default function Game() {
             </div>
 
             <div className="mt-3 text-sm text-slate-600">
-              Tổng tài sản = tiền mặt + giá hiện tại của tất cả ô đang sở hữu. Nếu bằng nhau thì so sánh số mạng.
+              Tổng Điểm = tiền + giá trị hiện tại của tài sản sở hữu + tim (500 mỗi tim). Nếu bằng điểm thì so về số tim, nếu vẫn bằng thì so về tên (theo bảng chữ cái).
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
@@ -614,3 +686,4 @@ export default function Game() {
     </div>
   );
 }
+
