@@ -164,6 +164,7 @@ export default function Game() {
     questionTimerEnabled ? QUESTION_DURATION_SECONDS : 0
   );
   const [gameOver, setGameOver] = useState(null);
+  const [endGameConfirmOpen, setEndGameConfirmOpen] = useState(false);
 
   const questionResolutionRef = useRef(false);
   const gameOverRef = useRef(gameOver);
@@ -177,6 +178,7 @@ export default function Game() {
     !!gameOver ||
     qOpen ||
     chanceOpen ||
+    endGameConfirmOpen ||
     penaltyForIdx != null ||
     offerBuyForIdx != null ||
     rolling ||
@@ -241,7 +243,13 @@ export default function Game() {
     setCurrQ(null);
     setPendingIdx(null);
     setOfferBuyForIdx(null);
+    setOfferBuyPriceOverride(null);
     setPenaltyForIdx(null);
+    setChanceOpen(false);
+    setChanceCard(null);
+    setChanceMessage("");
+    chancePostResolveIdxRef.current = null;
+    setEndGameConfirmOpen(false);
     setRolling(false);
     setIsMoving(false);
     setRemainingQuestionSeconds(0);
@@ -259,6 +267,21 @@ export default function Game() {
   useEffect(() => {
     finishGameRef.current = finishGame;
   });
+
+  function openEndGameConfirm() {
+    if (gameOverRef.current || !playersRef.current.length) return;
+    setEndGameConfirmOpen(true);
+  }
+
+  function cancelEndGameConfirm() {
+    setEndGameConfirmOpen(false);
+  }
+
+  function confirmEndGame() {
+    if (gameOverRef.current) return;
+    setEndGameConfirmOpen(false);
+    finishGame("manual-end");
+  }
 
   function eliminateIfDead(idx, nextLivesValue) {
     if (idx == null || idx < 0) return false;
@@ -830,15 +853,28 @@ export default function Game() {
   return (
     <div className="min-h-screen bg-slate-100 p-3 md:p-4">
       <div className="max-w-[1400px] mx-auto">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
           <h1 className="text-[22px] font-bold">MonopolyEdu – Bản đồ lịch sử 1945-1946</h1>
-          <button
-            onClick={() => navigate("/", { replace: false })}
-            className="text-sm rounded-lg border border-slate-300 px-3 py-1 hover:bg-slate-50"
-            title="Quay lại màn hình thiết lập"
-          >
-            ← Thiết lập
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            {!gameOver && hasPlayers && (
+              <button
+                type="button"
+                onClick={openEndGameConfirm}
+                className="text-sm rounded-lg border border-rose-300 bg-rose-50 px-3 py-1 text-rose-800 hover:bg-rose-100"
+                title="Kết thúc trận và hiện bảng điểm"
+              >
+                Kết thúc trận
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => navigate("/", { replace: false })}
+              className="text-sm rounded-lg border border-slate-300 px-3 py-1 hover:bg-slate-50"
+              title="Quay lại màn hình thiết lập"
+            >
+              ← Thiết lập
+            </button>
+          </div>
         </div>
 
         <p className="text-slate-600 mt-1">
@@ -903,6 +939,33 @@ export default function Game() {
         </div>
       </div>
 
+      {endGameConfirmOpen && !gameOver && (
+        <div className="fixed inset-0 z-[55] flex items-center justify-center bg-black/45 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <h3 className="text-lg font-semibold text-slate-900">Kết thúc trận đấu?</h3>
+            <p className="mt-2 text-sm text-slate-600">
+              Trận sẽ dừng ngay và hiển thị bảng điểm. Các thao tác đang mở (câu hỏi, mua ô, thẻ sự kiện…) sẽ được đóng lại.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={cancelEndGameConfirm}
+                className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700 hover:bg-slate-50"
+              >
+                Hủy
+              </button>
+              <button
+                type="button"
+                onClick={confirmEndGame}
+                className="rounded-lg bg-rose-600 px-4 py-2 text-white hover:bg-rose-700"
+              >
+                Kết thúc
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <ModalQuestion
         open={!!qOpen}
         question={currQ}
@@ -951,6 +1014,8 @@ export default function Game() {
                     ? "Đã hết thời gian trận đấu."
                     : gameOver.reason === "last-survivor"
                     ? "Chỉ còn một người sống sót."
+                    : gameOver.reason === "manual-end"
+                    ? "Người quản trò đã kết thúc trận đấu."
                     : "Trận đấu đã kết thúc."}
                 </p>
               </div>
